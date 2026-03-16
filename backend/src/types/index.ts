@@ -1,29 +1,40 @@
-import { Request } from 'express';
+import { Request } from "express";
 
 export interface AuthenticatedRequest extends Request {
   user?: {
     userId: string;
-    role: 'user' | 'admin';
+    role: "user" | "admin";
   };
 }
 
 export type OrderStatus =
-  | 'placed'
-  | 'confirmed'
-  | 'processing'
-  | 'shipped'
-  | 'out_for_delivery'
-  | 'delivered'
-  | 'cancelled'
-  | 'returned';
+  | "placed"
+  | "confirmed"
+  | "processing"
+  | "shipped"
+  | "out_for_delivery"
+  | "delivered"
+  | "cancelled"
+  | "returned";
 
-export type PaymentStatus = 'pending' | 'paid' | 'failed' | 'refunded';
+export type PaymentStatus =
+  | "pending"
+  | "paid"
+  | "failed"
+  | "refunded";
 
-export type AddressType = 'home' | 'work' | 'other';
+export type AddressType =
+  | "home"
+  | "work"
+  | "other";
 
-export type DiscountType = 'percentage' | 'fixed';
+export type DiscountType =
+  | "percentage"
+  | "fixed";
 
-export type UserRole = 'user' | 'admin';
+export type UserRole =
+  | "user"
+  | "admin";
 
 export interface PaginationQuery {
   page?: string;
