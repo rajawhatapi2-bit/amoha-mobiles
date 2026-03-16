@@ -8,17 +8,21 @@ const startServer = async (): Promise<void> => {
     // Connect to MongoDB
     await connectDB();
 
+    // Render provides PORT dynamically
+    const PORT = process.env.PORT || env.PORT || 5000;
+
     // Start Express server
-    const server = app.listen(env.PORT, () => {
-      logger.info(`🚀 AMOHA Mobiles API running on port ${env.PORT}`);
+    const server = app.listen(PORT, () => {
+      logger.info(`🚀 AMOHA Mobiles API running on port ${PORT}`);
       logger.info(`📦 Environment: ${env.NODE_ENV}`);
-      logger.info(`🔗 Health check: http://localhost:${env.PORT}/health`);
-      logger.info(`📡 API Base: http://localhost:${env.PORT}/api`);
+      logger.info(`🔗 Health check: /health`);
+      logger.info(`📡 API Base: /api`);
     });
 
     // Graceful shutdown
     const shutdown = (signal: string) => {
-      logger.info(`\n${signal} received. Shutting down gracefully...`);
+      logger.info(`${signal} received. Shutting down gracefully...`);
+
       server.close(() => {
         logger.info('HTTP server closed');
         process.exit(0);
@@ -34,15 +38,17 @@ const startServer = async (): Promise<void> => {
     process.on('SIGTERM', () => shutdown('SIGTERM'));
     process.on('SIGINT', () => shutdown('SIGINT'));
 
-    // Unhandled rejections & exceptions
-    process.on('unhandledRejection', (reason: any) => {
+    // Handle unhandled promise rejections
+    process.on('unhandledRejection', (reason: unknown) => {
       logger.error('Unhandled Rejection:', reason);
     });
 
+    // Handle uncaught exceptions
     process.on('uncaughtException', (error: Error) => {
       logger.error('Uncaught Exception:', error);
       process.exit(1);
     });
+
   } catch (error) {
     logger.error('Failed to start server:', error);
     process.exit(1);
