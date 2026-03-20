@@ -14,6 +14,8 @@ const envSchema = z.object({
   CORS_ORIGIN: z.string().default('http://localhost:3002,http://localhost:3003'),
   BCRYPT_SALT_ROUNDS: z.string().default('12'),
   LOG_LEVEL: z.enum(['error', 'warn', 'info', 'debug']).default('info'),
+  RAZORPAY_KEY_ID: z.string().default(''),
+  RAZORPAY_KEY_SECRET: z.string().default(''),
 });
 
 const parsed = envSchema.safeParse(process.env);
@@ -35,6 +37,8 @@ const env = {
   BCRYPT_SALT_ROUNDS: parseInt(parsed.data.BCRYPT_SALT_ROUNDS, 10),
   LOG_LEVEL: parsed.data.LOG_LEVEL,
   IS_PRODUCTION: parsed.data.NODE_ENV === 'production',
+  RAZORPAY_KEY_ID: parsed.data.RAZORPAY_KEY_ID,
+  RAZORPAY_KEY_SECRET: parsed.data.RAZORPAY_KEY_SECRET,
 } as const;
 
 export default env;

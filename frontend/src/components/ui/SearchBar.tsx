@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
@@ -53,7 +53,7 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
           <button
             type="button"
             onClick={clearSearch}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 dark:hover:text-white"
           >
             <HiOutlineX className="h-4 w-4" />
           </button>
@@ -62,7 +62,7 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
 
       {/* Suggestions dropdown */}
       {showSuggestions && (
-        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-gray-200 dark:border-white/10 bg-surface-100/95 shadow-glass backdrop-blur-xl">
+        <div className="absolute left-0 right-0 top-full z-50 mt-2 overflow-hidden rounded-xl border border-gray-200 bg-white shadow-lg dark:border-white/10 dark:bg-[#12121c]">
           {isSearching ? (
             <div className="flex items-center justify-center py-8">
               <div className="h-5 w-5 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" />
@@ -114,3 +114,4 @@ export default function SearchBar({ onSelect }: SearchBarProps) {
     </div>
   );
 }
+

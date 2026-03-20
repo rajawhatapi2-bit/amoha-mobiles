@@ -1,14 +1,15 @@
-'use client';
+﻿'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { HiOutlineUser, HiOutlineMail, HiOutlinePhone, HiOutlineLogout, HiOutlineShoppingBag, HiOutlineHeart, HiOutlineLocationMarker, HiOutlinePencil, HiOutlineTrash, HiOutlinePlus, HiX } from 'react-icons/hi';
+import Image from 'next/image';
+import { HiOutlineUser, HiOutlineMail, HiOutlinePhone, HiOutlineLogout, HiOutlineShoppingBag, HiOutlineHeart, HiOutlineLocationMarker, HiOutlinePencil, HiOutlineTrash, HiOutlinePlus, HiX, HiOutlineShieldCheck, HiOutlineIdentification, HiOutlineUpload, HiOutlinePhotograph } from 'react-icons/hi';
 import toast from 'react-hot-toast';
 import { useAuthStore } from '@/store/auth.store';
 import { userService } from '@/services/user.service';
 import { formatDate } from '@/lib/utils';
-import type { Address } from '@/types';
+import type { Address, KycInfo } from '@/types';
 
 const emptyAddress = {
   fullName: '',
@@ -31,10 +32,24 @@ export default function ProfilePage() {
   const [isSavingAddress, setIsSavingAddress] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  // KYC state
+  const [kycInfo, setKycInfo] = useState<KycInfo | null>(null);
+  const [showKycForm, setShowKycForm] = useState(false);
+  const [kycForm, setKycForm] = useState<{ documentType: 'aadhaar' | 'pan' | 'passport' | 'voter_id'; documentNumber: string; fullName: string; documentImage: string }>({ documentType: 'aadhaar', documentNumber: '', fullName: '', documentImage: '' });
+  const [isSubmittingKyc, setIsSubmittingKyc] = useState(false);
+  const [isUploadingDoc, setIsUploadingDoc] = useState(false);
+  const kycFileRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      userService.getKycStatus().then(setKycInfo).catch(() => {});
+    }
+  }, [isAuthenticated]);
+
   if (!isAuthenticated || !user) {
     return (
       <div className="page-container flex flex-col items-center justify-center py-32 text-center">
-        <p className="text-5xl">🔐</p>
+        <HiOutlineShieldCheck className="h-12 w-12 text-gray-400" />
         <h2 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Login Required</h2>
         <p className="mt-2 text-sm text-gray-500">Please sign in to view your profile.</p>
         <Link href="/login" className="mt-6 rounded-xl bg-primary-600 px-8 py-3 text-sm font-semibold text-white hover:bg-primary-500">
@@ -120,6 +135,67 @@ export default function ProfilePage() {
     { href: '/wishlist', icon: HiOutlineHeart, label: 'Wishlist', desc: 'Your saved items' },
   ];
 
+  const handleKycSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!kycForm.fullName || !kycForm.documentNumber) {
+      toast.error('Please fill all required fields');
+      return;
+    }
+    if (!kycForm.documentImage) {
+      toast.error('Please upload your document image');
+      return;
+    }
+    setIsSubmittingKyc(true);
+    try {
+      const result = await userService.submitKyc(kycForm);
+      setKycInfo(result);
+      setShowKycForm(false);
+      toast.success('KYC submitted successfully');
+    } catch {
+      toast.error('Failed to submit KYC');
+    } finally {
+      setIsSubmittingKyc(false);
+    }
+  };
+
+  const handleDocUpload = async (file: File) => {
+    const formData = new FormData();
+    formData.append('image', file);
+    setIsUploadingDoc(true);
+    try {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api'}/upload/kyc`, {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${document.cookie.split('token=')[1]?.split(';')[0] || ''}` },
+        body: formData,
+      });
+      const data = await res.json();
+      if (data.data?.url) {
+        setKycForm((p) => ({ ...p, documentImage: data.data.url }));
+        toast.success('Document uploaded');
+      } else {
+        toast.error('Upload failed');
+      }
+    } catch {
+      toast.error('Upload failed');
+    } finally {
+      setIsUploadingDoc(false);
+    }
+  };
+
+  const kycStatusColor = {
+    not_submitted: 'text-gray-500',
+    pending: 'text-amber-500',
+    verified: 'text-emerald-500',
+    rejected: 'text-red-500',
+  };
+
+  const kycStatusLabel = {
+    not_submitted: 'Not Submitted',
+    pending: 'Under Review',
+    verified: 'Verified',
+    rejected: 'Rejected',
+  };
+
   return (
     <div className="page-container py-6 sm:py-10">
       <h1 className="mb-8 text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">My Profile</h1>
@@ -191,7 +267,7 @@ export default function ProfilePage() {
                   <h4 className="text-sm font-semibold text-gray-900 dark:text-white">
                     {editingAddress ? 'Edit Address' : 'New Address'}
                   </h4>
-                  <button onClick={() => setShowAddressForm(false)} className="text-gray-500 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white">
+                  <button onClick={() => setShowAddressForm(false)} className="text-gray-500 hover:text-gray-900 dark:hover:text-white">
                     <HiX className="h-4 w-4" />
                   </button>
                 </div>
@@ -235,7 +311,7 @@ export default function ProfilePage() {
                       <span className="text-xs text-gray-500 dark:text-gray-400">Set as default</span>
                     </label>
                     <div className="ml-auto flex gap-2">
-                      <button type="button" onClick={() => setShowAddressForm(false)} className="rounded-lg border border-gray-200 dark:border-white/10 px-4 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white">
+                      <button type="button" onClick={() => setShowAddressForm(false)} className="rounded-lg border border-gray-200 dark:border-white/10 px-4 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
                         Cancel
                       </button>
                       <button
@@ -266,7 +342,7 @@ export default function ProfilePage() {
                         <p className="text-sm font-semibold text-gray-900 dark:text-white">{addr.fullName}</p>
                         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                           {addr.addressLine1}{addr.addressLine2 ? `, ${addr.addressLine2}` : ''}<br />
-                          {addr.city}, {addr.state} – {addr.pincode}
+                          {addr.city}, {addr.state} â€“ {addr.pincode}
                         </p>
                         <p className="mt-1 text-xs text-gray-500">{addr.phone}</p>
                         <div className="mt-2 flex items-center gap-2">
@@ -329,14 +405,174 @@ export default function ProfilePage() {
                 <label className="mb-1.5 block text-xs font-medium text-gray-500 dark:text-gray-400">Account Status</label>
                 <div className="flex h-[42px] items-center rounded-xl border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 px-4">
                   <span className={`text-sm font-medium ${user.isVerified ? 'text-emerald-400' : 'text-amber-400'}`}>
-                    {user.isVerified ? '✓ Verified' : '⏳ Pending Verification'}
+                    {user.isVerified ? 'Verified' : 'Pending Verification'}
                   </span>
                 </div>
               </div>
             </div>
+          </div>
+
+          {/* KYC Verification */}
+          <div className="glass-card p-5 sm:p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-lg font-bold text-gray-900 dark:text-white">KYC Verification</h3>
+              {kycInfo && (
+                <span className={`text-xs font-semibold ${kycStatusColor[kycInfo.status]}`}>
+                  {kycStatusLabel[kycInfo.status]}
+                </span>
+              )}
+            </div>
+
+            {!kycInfo || kycInfo.status === 'not_submitted' ? (
+              !showKycForm ? (
+                <div className="rounded-xl border border-dashed border-gray-200 dark:border-white/10 py-8 text-center">
+                  <HiOutlineIdentification className="mx-auto h-8 w-8 text-gray-400" />
+                  <p className="mt-2 text-sm text-gray-500">Complete your KYC to verify your identity.</p>
+                  <button
+                    onClick={() => setShowKycForm(true)}
+                    className="mt-4 rounded-lg bg-primary-600 px-4 py-2 text-xs font-semibold text-white hover:bg-primary-500"
+                  >
+                    Submit KYC
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={handleKycSubmit} className="space-y-4">
+                  <div>
+                    <label className="mb-1.5 block text-xs font-medium text-gray-500 dark:text-gray-400">Full Name (as per document) *</label>
+                    <input
+                      type="text"
+                      value={kycForm.fullName}
+                      onChange={(e) => setKycForm((p) => ({ ...p, fullName: e.target.value }))}
+                      className="glass-input py-2.5 text-sm"
+                      placeholder="Full legal name"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-medium text-gray-500 dark:text-gray-400">Document Type *</label>
+                    <select
+                      value={kycForm.documentType}
+                      onChange={(e) => setKycForm((p) => ({ ...p, documentType: e.target.value as 'aadhaar' | 'pan' | 'passport' | 'voter_id' }))}
+                      className="glass-input py-2.5 text-sm"
+                    >
+                      <option value="aadhaar">Aadhaar Card</option>
+                      <option value="pan">PAN Card</option>
+                      <option value="passport">Passport</option>
+                      <option value="voter_id">Voter ID</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-medium text-gray-500 dark:text-gray-400">Document Number *</label>
+                    <input
+                      type="text"
+                      value={kycForm.documentNumber}
+                      onChange={(e) => setKycForm((p) => ({ ...p, documentNumber: e.target.value }))}
+                      className="glass-input py-2.5 text-sm"
+                      placeholder="Enter document number"
+                    />
+                  </div>
+                  <div>
+                    <label className="mb-1.5 block text-xs font-medium text-gray-500 dark:text-gray-400">Upload Document Image *</label>
+                    <input
+                      type="file"
+                      ref={kycFileRef}
+                      accept="image/jpeg,image/png,image/webp"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) handleDocUpload(file);
+                      }}
+                    />
+                    {kycForm.documentImage ? (
+                      <div className="relative mt-1 inline-block">
+                        <div className="relative h-32 w-48 overflow-hidden rounded-lg border border-gray-200 dark:border-white/10">
+                          <Image src={kycForm.documentImage} alt="Document" fill className="object-cover" sizes="192px" />
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setKycForm((p) => ({ ...p, documentImage: '' }))}
+                          className="absolute -right-2 -top-2 flex h-6 w-6 items-center justify-center rounded-full bg-red-500 text-white shadow hover:bg-red-600"
+                        >
+                          <HiX className="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    ) : (
+                      <button
+                        type="button"
+                        disabled={isUploadingDoc}
+                        onClick={() => kycFileRef.current?.click()}
+                        className="mt-1 flex w-full items-center justify-center gap-2 rounded-xl border-2 border-dashed border-gray-300 dark:border-white/15 py-8 text-sm text-gray-500 transition hover:border-primary-400 hover:text-primary-500 dark:text-gray-400 disabled:opacity-50"
+                      >
+                        {isUploadingDoc ? (
+                          <span className="flex items-center gap-2"><span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-500 border-t-transparent" /> Uploading...</span>
+                        ) : (
+                          <><HiOutlineUpload className="h-5 w-5" /> Click to upload Aadhaar / ID proof</>
+                        )}
+                      </button>
+                    )}
+                    <p className="mt-1 text-[10px] text-gray-400">Accepted: JPEG, PNG, WebP. Max 5MB.</p>
+                  </div>
+                  <div className="flex gap-2">
+                    <button type="button" onClick={() => setShowKycForm(false)} className="rounded-lg border border-gray-200 dark:border-white/10 px-4 py-2 text-xs text-gray-500 hover:text-gray-900 dark:hover:text-white">
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      disabled={isSubmittingKyc}
+                      className="rounded-lg bg-primary-600 px-4 py-2 text-xs font-semibold text-white hover:bg-primary-500 disabled:opacity-50"
+                    >
+                      {isSubmittingKyc ? 'Submitting...' : 'Submit KYC'}
+                    </button>
+                  </div>
+                </form>
+              )
+            ) : kycInfo.status === 'pending' ? (
+              <div className="rounded-xl border border-amber-500/20 bg-amber-500/5 p-4 text-center">
+                <HiOutlineShieldCheck className="mx-auto h-8 w-8 text-amber-500" />
+                <p className="mt-2 text-sm font-medium text-amber-600 dark:text-amber-400">Your KYC is under review</p>
+                <p className="mt-1 text-xs text-gray-500">We will verify your documents shortly.</p>
+              </div>
+            ) : kycInfo.status === 'verified' ? (
+              <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/5 p-4">
+                <div className="flex items-center gap-3">
+                  <HiOutlineShieldCheck className="h-6 w-6 text-emerald-500" />
+                  <div>
+                    <p className="text-sm font-semibold text-emerald-600 dark:text-emerald-400">KYC Verified</p>
+                    <p className="text-xs text-gray-500">Your identity has been successfully verified.</p>
+                  </div>
+                </div>
+                <div className="mt-3 grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <span className="text-gray-500">Name:</span>
+                    <span className="ml-1 text-gray-700 dark:text-gray-300">{kycInfo.fullName}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Document:</span>
+                    <span className="ml-1 uppercase text-gray-700 dark:text-gray-300">{kycInfo.documentType?.replace('_', ' ')}</span>
+                  </div>
+                </div>
+              </div>
+            ) : kycInfo.status === 'rejected' ? (
+              <div className="rounded-xl border border-red-500/20 bg-red-500/5 p-4 text-center">
+                <p className="text-sm font-medium text-red-500">KYC Rejected</p>
+                {kycInfo.rejectionReason && (
+                  <p className="mt-1 text-xs text-gray-500">Reason: {kycInfo.rejectionReason}</p>
+                )}
+                <button
+                  onClick={() => {
+                    setKycForm({ documentType: 'aadhaar', documentNumber: '', fullName: '', documentImage: '' });
+                    setShowKycForm(true);
+                    setKycInfo(null);
+                  }}
+                  className="mt-3 rounded-lg bg-primary-600 px-4 py-2 text-xs font-semibold text-white hover:bg-primary-500"
+                >
+                  Resubmit KYC
+                </button>
+              </div>
+            ) : null}
           </div>
         </div>
       </div>
     </div>
   );
 }
+

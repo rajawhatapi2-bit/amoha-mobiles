@@ -1,5 +1,5 @@
 import apiClient from '@/lib/api-client';
-import type { Address, ApiResponse } from '@/types';
+import type { Address, ApiResponse, KycInfo } from '@/types';
 
 export const userService = {
   getAddresses: async (): Promise<Address[]> => {
@@ -19,5 +19,15 @@ export const userService = {
 
   deleteAddress: async (addressId: string): Promise<void> => {
     await apiClient.delete(`/users/addresses/${addressId}`);
+  },
+
+  getKycStatus: async (): Promise<KycInfo> => {
+    const { data } = await apiClient.get<ApiResponse<KycInfo>>('/users/kyc');
+    return data.data;
+  },
+
+  submitKyc: async (kycData: { documentType: string; documentNumber: string; fullName: string; documentImage?: string }): Promise<KycInfo> => {
+    const { data } = await apiClient.post<ApiResponse<KycInfo>>('/users/kyc', kycData);
+    return data.data;
   },
 };

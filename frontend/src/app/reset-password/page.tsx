@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -54,7 +54,7 @@ function ResetPasswordForm() {
         <div className="relative w-full max-w-md">
           <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-primary-600/20 to-accent-600/20 blur-3xl" />
           <div className="glass-card relative p-8 sm:p-10 text-center">
-            <p className="text-5xl">🔗</p>
+            <p className="text-5xl"></p>
             <h2 className="mt-4 text-xl font-bold text-gray-900 dark:text-white">Invalid Reset Link</h2>
             <p className="mt-2 text-sm text-gray-500">
               This password reset link is invalid or has expired.
@@ -89,7 +89,7 @@ function ResetPasswordForm() {
           {isReset ? (
             <div className="mt-8 space-y-6">
               <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-center">
-                <p className="text-3xl">✅</p>
+                <p className="text-3xl"></p>
                 <p className="mt-2 text-sm font-medium text-emerald-400">
                   Password reset successfully!
                 </p>
@@ -120,7 +120,7 @@ function ResetPasswordForm() {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 dark:hover:text-white"
                   >
                     {showPassword ? <HiOutlineEyeOff className="h-4 w-4" /> : <HiOutlineEye className="h-4 w-4" />}
                   </button>
@@ -182,3 +182,4 @@ export default function ResetPasswordPage() {
     </Suspense>
   );
 }
+

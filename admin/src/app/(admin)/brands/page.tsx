@@ -15,6 +15,7 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { brandService } from '@/services/brand.service';
+import { ImageUploader } from '@/components/shared/image-uploader';
 import { formatDate } from '@/lib/utils';
 import type { Brand } from '@/types';
 
@@ -117,7 +118,7 @@ export default function BrandsPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Input label="Brand Name" placeholder="e.g. Samsung" error={errors.name?.message} {...register('name')} />
             <Textarea label="Description" placeholder="About this brand..." {...register('description')} />
-            <Input label="Logo URL" placeholder="https://..." {...register('logo')} />
+            <ImageUploader value={watch('logo') ?? ''} onChange={(url) => setValue('logo', url)} folder="brands" label="Brand Logo" />
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium">Active</label>
               <Switch checked={watch('isActive')} onCheckedChange={(v) => setValue('isActive', v)} />

@@ -49,7 +49,7 @@ export default function ForgotPasswordPage() {
           {isSent ? (
             <div className="mt-8 space-y-6">
               <div className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-center">
-                <p className="text-3xl">📧</p>
+                <p className="text-3xl"></p>
                 <p className="mt-2 text-sm font-medium text-emerald-400">
                   Reset link sent successfully!
                 </p>

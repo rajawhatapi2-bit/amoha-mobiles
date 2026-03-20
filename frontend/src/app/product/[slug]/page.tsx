@@ -70,6 +70,13 @@ export default function ProductDetailPage() {
     setActiveTab('specs');
   }, [slug]);
 
+  // Track product view for logged-in users
+  useEffect(() => {
+    if (product && isAuthenticated) {
+      productService.trackView(product._id).catch(() => {});
+    }
+  }, [product?._id, isAuthenticated]);
+
   const navigateImage = useCallback(
     (dir: 1 | -1) => {
       if (!product) return;
@@ -90,7 +97,9 @@ export default function ProductDetailPage() {
   if (!product) {
     return (
       <div className="page-container flex flex-col items-center justify-center py-32 text-center">
-        <p className="text-6xl">😕</p>
+        <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/5">
+          <HiOutlineShoppingBag className="h-8 w-8 text-gray-400" />
+        </div>
         <h2 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Product Not Found</h2>
         <p className="mt-2 text-gray-500">The product you&apos;re looking for doesn&apos;t exist.</p>
         <Link href="/products" className="mt-6 rounded-xl bg-primary-600 px-6 py-3 text-sm font-semibold text-white transition-colors hover:bg-primary-500">
@@ -245,7 +254,7 @@ export default function ProductDetailPage() {
 
             {/* Thumbnails (tablet+) */}
             {product.images.length > 1 && (
-              <div className="hidden gap-2 overflow-x-auto pb-1 sm:flex">
+              <div className="hidden gap-2 overflow-x-auto scrollbar-hide pb-1 sm:flex">
                 {product.images.map((img, idx) => (
                   <button
                     key={idx}
@@ -399,7 +408,7 @@ export default function ProductDetailPage() {
             <div className="mt-6 grid grid-cols-3 gap-2 sm:gap-3">
               {[
                 { icon: HiOutlineTruck, label: 'Free Delivery', sub: 'On orders above ₹999' },
-                { icon: HiOutlineShieldCheck, label: '1 Year Warranty', sub: 'Brand warranty' },
+                { icon: HiOutlineShieldCheck, label: product.warranty || 'Warranty', sub: 'Brand warranty' },
                 { icon: HiOutlineRefresh, label: '7 Day Returns', sub: 'Easy returns' },
               ].map((item) => (
                 <div
@@ -442,7 +451,7 @@ export default function ProductDetailPage() {
             {activeTab === 'specs' ? (
               /* ── Specifications Table ── */
               <div className="glass-card overflow-hidden">
-                <div className="overflow-x-auto">
+                <div className="overflow-x-auto scrollbar-hide">
                   <table className="w-full text-sm">
                     <tbody>
                       {specEntries.map(([key, value], idx) => (
@@ -494,7 +503,6 @@ export default function ProductDetailPage() {
                   ))
                 ) : (
                   <div className="glass-card flex flex-col items-center py-14 text-center">
-                    <p className="text-4xl">💬</p>
                     <p className="mt-3 text-sm text-gray-500">No reviews yet. Be the first to review!</p>
                   </div>
                 )}

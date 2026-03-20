@@ -25,6 +25,8 @@ interface DataTableProps<T> {
   toolbar?: React.ReactNode;
   emptyMessage?: string;
   rowKey: (row: T) => string;
+  expandedRow?: string | null;
+  renderExpandedRow?: (row: T) => React.ReactNode;
 }
 
 function SkeletonRow({ cols }: { cols: number }) {
@@ -44,7 +46,7 @@ export function DataTable<T>({
   searchValue, onSearchChange, searchPlaceholder = 'Search...',
   sortBy, sortOrder, onSort,
   toolbar, emptyMessage = 'No records found.',
-  rowKey,
+  rowKey, expandedRow, renderExpandedRow,
 }: DataTableProps<T>) {
   return (
     <div className="space-y-4">
@@ -107,15 +109,24 @@ export function DataTable<T>({
                   </tr>
                 )
                 : data.map((row) => (
-                  <tr key={rowKey(row)} className="hover:bg-secondary/20 transition-colors">
-                    {columns.map((col) => (
-                      <td key={col.key} className={cn('px-4 py-3 text-foreground', col.className)}>
-                        {col.render
-                          ? col.render(row)
-                          : String((row as Record<string, unknown>)[col.key] ?? '')}
-                      </td>
-                    ))}
-                  </tr>
+                  <React.Fragment key={rowKey(row)}>
+                    <tr className="hover:bg-secondary/20 transition-colors">
+                      {columns.map((col) => (
+                        <td key={col.key} className={cn('px-4 py-3 text-foreground', col.className)}>
+                          {col.render
+                            ? col.render(row)
+                            : String((row as Record<string, unknown>)[col.key] ?? '')}
+                        </td>
+                      ))}
+                    </tr>
+                    {expandedRow === rowKey(row) && renderExpandedRow && (
+                      <tr>
+                        <td colSpan={columns.length}>
+                          {renderExpandedRow(row)}
+                        </td>
+                      </tr>
+                    )}
+                  </React.Fragment>
                 ))}
             </tbody>
           </table>

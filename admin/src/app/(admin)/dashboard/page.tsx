@@ -24,7 +24,7 @@ export default function DashboardPage() {
   const downloadReport = async (type: 'sales' | 'inventory') => {
     try {
       const token = Cookies.get('admin_token');
-      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+      const baseUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5001/api';
       const now = new Date();
       const url = type === 'sales'
         ? `${baseUrl}/admin/reports/sales?month=${now.getMonth() + 1}&year=${now.getFullYear()}`
@@ -63,6 +63,8 @@ export default function DashboardPage() {
           dashboardService.getRecentOrders(),
         ]);
         setStats(s); setRevenue(r); setTopProducts(tp); setRecentOrders(ro);
+      } catch {
+        toast.error('Failed to load dashboard data. Make sure the server is running.');
       } finally {
         setLoading(false);
       }

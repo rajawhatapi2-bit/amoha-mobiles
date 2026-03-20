@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import Image from 'next/image';
@@ -70,20 +70,20 @@ export default function CartPage() {
                   <Link href={`/product/${item.product.slug}`} className="text-sm font-semibold text-gray-900 dark:text-white hover:text-primary-400 line-clamp-2">
                     {item.product.name}
                   </Link>
-                  <p className="mt-0.5 text-xs text-gray-500">{item.product.brand}{item.color ? ` · ${item.color}` : ''}</p>
+                  <p className="mt-0.5 text-xs text-gray-500">{item.product.brand}{item.color ? ` Â· ${item.color}` : ''}</p>
                 </div>
                 <div className="mt-2 flex items-center justify-between">
                   <div className="flex items-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5">
                     <button
                       onClick={() => updateQuantity(item._id, Math.max(1, item.quantity - 1))}
                       disabled={isLoading}
-                      className="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
-                    >−</button>
+                      className="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
+                    >âˆ’</button>
                     <span className="min-w-[1.5rem] text-center text-xs font-semibold text-gray-900 dark:text-white">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item._id, item.quantity + 1)}
                       disabled={isLoading}
-                      className="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
+                      className="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
                     >+</button>
                   </div>
                   <div className="flex items-center gap-3">
@@ -143,7 +143,7 @@ export default function CartPage() {
               {discount > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500 dark:text-gray-400">Discount</span>
-                  <span className="text-emerald-400">−{formatPrice(discount)}</span>
+                  <span className="text-emerald-400">âˆ’{formatPrice(discount)}</span>
                 </div>
               )}
               <div className="flex justify-between text-sm">
@@ -166,7 +166,7 @@ export default function CartPage() {
             </Link>
             <Link
               href="/products"
-              className="mt-3 flex w-full items-center justify-center rounded-xl border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300 dark:hover:border-white/20 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white"
+              className="mt-3 flex w-full items-center justify-center rounded-xl border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300 dark:hover:border-white/20 hover:text-gray-900 dark:hover:text-white"
             >
               Continue Shopping
             </Link>

@@ -39,7 +39,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
   // Fetch profile on mount if token exists
   useEffect(() => {
     const checkAuth = async () => {
-      if (token && !isAuthenticated) {
+      if (token) {
         try {
           await fetchProfile();
         } catch {
@@ -52,7 +52,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
     if (hydrated) {
       checkAuth();
     }
-  }, [token, isAuthenticated, fetchProfile, hydrated]);
+  }, [token, fetchProfile, hydrated]);
 
   // Redirect authenticated users away from auth pages (login/register)
   useEffect(() => {

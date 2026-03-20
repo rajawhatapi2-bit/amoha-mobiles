@@ -76,6 +76,8 @@ export interface Product {
   _id: string;
   name: string;
   slug: string;
+  sku: string;
+  barcode: string;
   brand: string | Brand;
   category: string | Category;
   description: string;
@@ -94,6 +96,7 @@ export interface Product {
   isFeatured: boolean;
   isTrending: boolean;
   colors: string[];
+  warranty: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -111,6 +114,7 @@ export interface ProductFormData {
   isFeatured: boolean;
   isTrending: boolean;
   colors: string;
+  warranty: string;
   specifications: Record<string, string>;
 }
 
@@ -188,6 +192,11 @@ export interface Order {
   totalAmount: number;
   estimatedDelivery: string;
   deliveredAt?: string;
+  trackingNumber?: string;
+  trackingUrl?: string;
+  logisticsPartner?: 'dhl' | 'professional_courier' | 'other';
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -234,6 +243,13 @@ export interface User {
   isBlocked: boolean;
   totalOrders: number;
   totalSpent: number;
+  kyc?: {
+    status: 'not_submitted' | 'pending' | 'verified' | 'rejected';
+    documentType?: string;
+    documentNumber?: string;
+    fullName?: string;
+    rejectionReason?: string;
+  };
   createdAt: string;
 }
 

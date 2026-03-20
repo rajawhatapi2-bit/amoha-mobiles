@@ -22,6 +22,7 @@ export interface Product {
   isFeatured: boolean;
   isTrending: boolean;
   colors: string[];
+  warranty: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -96,8 +97,20 @@ export interface User {
   addresses: Address[];
   role: 'user' | 'admin';
   isVerified: boolean;
+  kyc?: KycInfo;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface KycInfo {
+  status: 'not_submitted' | 'pending' | 'verified' | 'rejected';
+  documentType?: 'aadhaar' | 'pan' | 'passport' | 'voter_id';
+  documentNumber?: string;
+  documentImage?: string;
+  fullName?: string;
+  submittedAt?: string;
+  verifiedAt?: string;
+  rejectionReason?: string;
 }
 
 export interface Address {
@@ -178,6 +191,11 @@ export interface Order {
   coupon?: AppliedCoupon;
   estimatedDelivery: string;
   deliveredAt?: string;
+  trackingNumber?: string;
+  trackingUrl?: string;
+  logisticsPartner?: string;
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -247,6 +265,18 @@ export interface Coupon {
   maxDiscount?: number;
   isValid: boolean;
   message: string;
+}
+
+// ==================== Payment Types ====================
+export interface RazorpayOrderResponse {
+  razorpayOrderId: string;
+  amount: number;
+  currency: string;
+  keyId: string;
+  subtotal: number;
+  discount: number;
+  deliveryCharge: number;
+  totalAmount: number;
 }
 
 // ==================== Compare Types ====================

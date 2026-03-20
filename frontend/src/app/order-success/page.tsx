@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { Suspense } from 'react';
 import Link from 'next/link';
@@ -16,7 +16,7 @@ function OrderSuccessContent() {
         <HiOutlineCheckCircle className="relative h-24 w-24 text-emerald-400 animate-pulse-glow" />
       </div>
 
-      <h1 className="mt-8 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">Order Placed! 🎉</h1>
+      <h1 className="mt-8 text-3xl font-bold text-gray-900 dark:text-white sm:text-4xl">Order Placed!</h1>
       <p className="mt-3 max-w-md text-sm text-gray-500 dark:text-gray-400">
         Thank you for your purchase. Your order has been confirmed and will be shipped soon.
       </p>
@@ -31,7 +31,7 @@ function OrderSuccessContent() {
       <div className="mt-8 glass-card max-w-sm w-full p-6 space-y-4">
         <div className="flex items-center gap-3 text-left">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-500/10">
-            <span className="text-lg">📦</span>
+            <span className="text-lg">1</span>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-900 dark:text-white">Order Confirmed</p>
@@ -40,7 +40,7 @@ function OrderSuccessContent() {
         </div>
         <div className="flex items-center gap-3 text-left">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5">
-            <span className="text-lg">🚚</span>
+            <span className="text-lg">2</span>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Shipping</p>
@@ -49,7 +49,7 @@ function OrderSuccessContent() {
         </div>
         <div className="flex items-center gap-3 text-left">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gray-100 dark:bg-white/5">
-            <span className="text-lg">✅</span>
+            <span className="text-lg">3</span>
           </div>
           <div>
             <p className="text-sm font-medium text-gray-500 dark:text-gray-400">Delivered</p>
@@ -68,7 +68,7 @@ function OrderSuccessContent() {
         </Link>
         <Link
           href="/products"
-          className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 px-8 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300 dark:hover:border-white/20 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white"
+          className="inline-flex items-center justify-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 px-8 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300 dark:hover:border-white/20 hover:text-gray-900 dark:hover:text-white"
         >
           <HiOutlineShoppingBag className="h-4 w-4" />
           Continue Shopping
@@ -85,3 +85,4 @@ export default function OrderSuccessPage() {
     </Suspense>
   );
 }
+

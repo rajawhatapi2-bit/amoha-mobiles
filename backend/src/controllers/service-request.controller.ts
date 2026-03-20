@@ -2,6 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import serviceRequestService from '../services/service-request.service';
 import { sendSuccess, sendCreated, sendMessage } from '../utils/response.util';
 import { AuthenticatedRequest } from '../types';
+import { notifyServiceRequest } from '../utils/notify';
+import { sendServiceRequestStatusEmail } from '../utils/email.util';
 
 class ServiceRequestController {
   // Public: submit a service request
@@ -13,6 +15,7 @@ class ServiceRequestController {
         user: authReq.user?.userId,
       };
       const request = await serviceRequestService.create(data);
+      notifyServiceRequest(request.customerName, request.serviceType, request._id.toString());
       sendCreated(res, request, 'Service request submitted successfully');
     } catch (error) {
       next(error);
@@ -66,6 +69,17 @@ class ServiceRequestController {
         adminNotes,
         finalPrice,
       );
+      // Send status email to customer
+      if (request.customerEmail) {
+        sendServiceRequestStatusEmail(
+          request.customerEmail,
+          request.customerName,
+          request.requestNumber,
+          request.serviceType,
+          request.status,
+          request.adminNotes,
+        ).catch(() => {});
+      }
       sendSuccess(res, request, 'Service request updated');
     } catch (error) {
       next(error);

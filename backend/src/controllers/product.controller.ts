@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import productService from '../services/product.service';
 import { AuthenticatedRequest, ProductFilterQuery } from '../types';
 import { sendSuccess, sendCreated, sendMessage } from '../utils/response.util';
+import { notifyReview } from '../utils/notify';
 
 class ProductController {
   async getAll(req: Request, res: Response, next: NextFunction) {
@@ -111,6 +112,7 @@ class ProductController {
   async addReview(req: AuthenticatedRequest, res: Response, next: NextFunction) {
     try {
       const product = await productService.addReview(req.params.id, req.user!.userId, req.body);
+      notifyReview(product.name, req.body.rating, req.user!.userId);
       sendCreated(res, product, 'Review added');
     } catch (error) {
       next(error);

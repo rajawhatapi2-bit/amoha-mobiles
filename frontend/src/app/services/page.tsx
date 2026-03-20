@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState } from 'react';
 import { HiOutlineDeviceMobile, HiOutlineLightningBolt, HiOutlineChip, HiOutlineShieldCheck, HiOutlineX } from 'react-icons/hi';
@@ -162,7 +162,7 @@ export default function ServicesPage() {
           <div className="glass-card w-full max-w-lg max-h-[90vh] overflow-y-auto p-6 sm:p-8 relative">
             <button
               onClick={() => setShowForm(false)}
-              className="absolute right-4 top-4 text-gray-500 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white transition-colors"
+              className="absolute right-4 top-4 text-gray-500 hover:text-gray-900 dark:hover:text-white transition-colors"
             >
               <HiOutlineX className="h-5 w-5" />
             </button>
@@ -232,3 +232,4 @@ export default function ServicesPage() {
     </div>
   );
 }
+

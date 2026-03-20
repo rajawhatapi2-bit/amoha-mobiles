@@ -8,6 +8,8 @@ import userController from '../controllers/user.controller';
 import bannerController from '../controllers/banner.controller';
 import serviceRequestController from '../controllers/service-request.controller';
 import contactController from '../controllers/contact.controller';
+import settingsController from '../controllers/settings.controller';
+import notificationController from '../controllers/notification.controller';
 import { authenticate } from '../middleware/auth.middleware';
 import { isAdmin } from '../middleware/role.middleware';
 import { validate } from '../middleware/validate.middleware';
@@ -15,6 +17,9 @@ import { createProductSchema, updateProductSchema } from '../validators/product.
 import { updateOrderStatusSchema } from '../validators/order.validator';
 import couponService from '../services/coupon.service';
 import productService from '../services/product.service';
+import productViewController from '../controllers/product-view.controller';
+import barcodeController from '../controllers/barcode.controller';
+import crmController from '../controllers/crm.controller';
 import { sendSuccess, sendCreated, sendMessage } from '../utils/response.util';
 
 const router = Router();
@@ -57,13 +62,18 @@ router.get('/reports/sales', async (req: Request, res: Response, next: NextFunct
     csv += `Generated: ${new Date().toLocaleDateString()}\n\n`;
     csv += `Order Number,Date,Customer,Email,Phone,Items,Subtotal,Discount,Delivery,Total,Payment Status,Order Status\n`;
 
+    const sanitizeCsv = (val: string) => {
+      if (/^[=+\-@\t\r]/.test(val)) return `'${val}`;
+      return val;
+    };
+
     let totalRevenue = 0;
     let totalOrders = orders.length;
     let totalDiscount = 0;
 
     orders.forEach((order: any) => {
       const items = order.items.map((i: any) => `${i.product?.name || 'N/A'} x${i.quantity}`).join('; ');
-      csv += `${order.orderNumber},${new Date(order.createdAt).toLocaleDateString()},${order.user?.name || 'N/A'},${order.user?.email || 'N/A'},${order.shippingAddress?.phone || 'N/A'},"${items}",${order.subtotal},${order.discount},${order.deliveryCharge},${order.totalAmount},${order.paymentStatus},${order.orderStatus}\n`;
+      csv += `${sanitizeCsv(order.orderNumber)},${new Date(order.createdAt).toLocaleDateString()},${sanitizeCsv(order.user?.name || 'N/A')},${sanitizeCsv(order.user?.email || 'N/A')},${sanitizeCsv(order.shippingAddress?.phone || 'N/A')},"${sanitizeCsv(items)}",${order.subtotal},${order.discount},${order.deliveryCharge},${order.totalAmount},${order.paymentStatus},${order.orderStatus}\n`;
       if (order.paymentStatus === 'paid') totalRevenue += order.totalAmount;
       totalDiscount += order.discount || 0;
     });
@@ -95,13 +105,18 @@ router.get('/reports/inventory', async (_req: Request, res: Response, next: Next
     csv += `Name,Brand,Category,Price,Original Price,Stock,In Stock,Ratings,Reviews,Featured,Trending\n`;
 
     let totalProducts = products.length;
+    const sanitizeInv = (val: string) => {
+      if (/^[=+\-@\t\r]/.test(val)) return `'${val}`;
+      return val;
+    };
+
     let totalStock = 0;
     let lowStock = 0;
     let outOfStock = 0;
     let totalValue = 0;
 
     products.forEach((p: any) => {
-      csv += `"${p.name}",${p.brand},${p.category},${p.price},${p.originalPrice},${p.stock},${p.inStock ? 'Yes' : 'No'},${p.ratings},${p.numReviews},${p.isFeatured ? 'Yes' : 'No'},${p.isTrending ? 'Yes' : 'No'}\n`;
+      csv += `"${sanitizeInv(p.name)}",${sanitizeInv(p.brand)},${sanitizeInv(p.category)},${p.price},${p.originalPrice},${p.stock},${p.inStock ? 'Yes' : 'No'},${p.ratings},${p.numReviews},${p.isFeatured ? 'Yes' : 'No'},${p.isTrending ? 'Yes' : 'No'}\n`;
       totalStock += p.stock;
       if (p.stock === 0) outOfStock++;
       else if (p.stock <= 5) lowStock++;
@@ -203,6 +218,7 @@ router.patch('/orders/:id/status', validate(updateOrderStatusSchema), orderContr
 router.post('/orders/:id/refund', async (req: Request, res: Response, next: NextFunction) => {
   try {
     const Order = (await import('../models/order.model')).default;
+    const Product = (await import('../models/product.model')).default;
     const order = await Order.findById(req.params.id);
     if (!order) {
       const { NotFoundError } = await import('../errors/app-error');
@@ -216,6 +232,20 @@ router.post('/orders/:id/refund', async (req: Request, res: Response, next: Next
     });
     order.paymentStatus = 'refunded' as any;
     await order.save();
+
+    // Restore stock for refunded items
+    for (const item of order.items) {
+      const product = await Product.findByIdAndUpdate(
+        item.product,
+        { $inc: { stock: item.quantity } },
+        { new: true },
+      );
+      if (product && product.stock > 0) {
+        product.inStock = true;
+        await product.save();
+      }
+    }
+
     const updated = await Order.findById(order._id).populate('items.product');
     sendSuccess(res, updated, 'Refund processed');
   } catch (error) {
@@ -364,5 +394,62 @@ router.patch('/orders/:id/tracking', async (req: Request, res: Response, next: N
     next(error);
   }
 });
+
+// ====== Site Settings ======
+router.get('/settings', settingsController.get);
+router.put('/settings', settingsController.update);
+
+// ====== Notifications ======
+router.get('/notifications', notificationController.getAll);
+router.get('/notifications/recent', notificationController.getRecent);
+router.get('/notifications/unread-count', notificationController.getUnreadCount);
+router.patch('/notifications/:id/read', notificationController.markRead);
+router.patch('/notifications/read-all', notificationController.markAllRead);
+router.delete('/notifications/clear', notificationController.clearAll);
+router.delete('/notifications/:id', notificationController.delete);
+
+// ====== Product View Tracking (User Browsing Activity) ======
+router.get('/product-views', productViewController.getAll);
+router.get('/product-views/user-summary', productViewController.getUserSummary);
+router.get('/product-views/user/:userId', productViewController.getUserViews);
+
+// ====== Cart Abandonment ======
+router.get('/abandoned-carts', productViewController.getAbandonedCarts);
+router.get('/abandoned-carts/download', productViewController.downloadAbandonedCarts);
+
+// ====== Order Tracking Update ======
+router.patch('/orders/:id/tracking', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const Order = (await import('../models/order.model')).default;
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      const { NotFoundError } = await import('../errors/app-error');
+      throw new NotFoundError('Order');
+    }
+    const { trackingNumber, trackingUrl, logisticsPartner, estimatedDelivery } = req.body;
+    if (trackingNumber !== undefined) order.trackingNumber = trackingNumber;
+    if (trackingUrl !== undefined) order.trackingUrl = trackingUrl;
+    if (logisticsPartner !== undefined) order.logisticsPartner = logisticsPartner;
+    if (estimatedDelivery !== undefined) order.estimatedDelivery = new Date(estimatedDelivery);
+    await order.save();
+    const updated = await Order.findById(order._id).populate('user', 'name email phone').populate('items.product', 'name thumbnail price').lean();
+    sendSuccess(res, updated, 'Tracking info updated');
+  } catch (error) {
+    next(error);
+  }
+});
+
+// ====== Barcode / SKU ======
+router.get('/barcode/lookup/:code', barcodeController.lookup);
+router.get('/barcode/stock/:code', barcodeController.stockCheck);
+router.post('/barcode/bulk-lookup', barcodeController.bulkLookup);
+router.post('/barcode/regenerate/:productId', barcodeController.regenerate);
+
+// ====== CRM ======
+router.get('/crm/customers', crmController.getCustomers);
+router.get('/crm/customers/:customerId', crmController.getCustomerProfile);
+router.post('/crm/customers/:customerId/notes', crmController.addNote);
+router.delete('/crm/notes/:noteId', crmController.deleteNote);
+router.get('/crm/segments', crmController.getSegmentSummary);
 
 export default router;

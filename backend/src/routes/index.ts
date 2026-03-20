@@ -12,6 +12,9 @@ import couponRoutes from './coupon.routes';
 import adminRoutes from './admin.routes';
 import serviceRequestRoutes from './service-request.routes';
 import contactRoutes from './contact.routes';
+import paymentRoutes from './payment.routes';
+import settingsRoutes from './settings.routes';
+import uploadRoutes from './upload.routes';
 
 const router = Router();
 
@@ -28,5 +31,8 @@ router.use('/coupons', couponRoutes);
 router.use('/admin', adminRoutes);
 router.use('/service-requests', serviceRequestRoutes);
 router.use('/contact', contactRoutes);
+router.use('/payment', paymentRoutes);
+router.use('/settings', settingsRoutes);
+router.use('/upload', uploadRoutes);
 
 export default router;

@@ -1,7 +1,7 @@
 'use client';
 import React, { useEffect, useState, useCallback } from 'react';
 import toast from 'react-hot-toast';
-import { ShieldBan, ShieldCheck, Trash2 } from 'lucide-react';
+import { ShieldBan, ShieldCheck, Trash2, CheckCircle2, XCircle } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { DataTable, Column } from '@/components/shared/data-table';
 import { Pagination } from '@/components/shared/pagination';
@@ -88,6 +88,28 @@ export default function UsersPage() {
     },
     { key: 'totalOrders', header: 'Orders', render: (u) => <span className="font-medium">{u.totalOrders ?? 0}</span> },
     { key: 'totalSpent', header: 'Total Spent', render: (u) => <span className="font-semibold">{formatCurrency(u.totalSpent ?? 0)}</span> },
+    {
+      key: 'kyc', header: 'KYC',
+      render: (u) => {
+        const status = u.kyc?.status || 'not_submitted';
+        const variant = status === 'verified' ? 'success' : status === 'pending' ? 'warning' : status === 'rejected' ? 'destructive' : 'secondary';
+        return (
+          <div className="flex items-center gap-1.5">
+            <Badge variant={variant}>{status === 'not_submitted' ? 'N/A' : status}</Badge>
+            {status === 'pending' && (
+              <div className="flex gap-0.5">
+                <Button variant="outline" size="icon-sm" className="h-6 w-6 hover:border-green-500 hover:text-green-600" title="Verify KYC" onClick={async () => { try { await userService.verifyKyc(u._id); toast.success('KYC verified'); load(); } catch { toast.error('Failed'); } }}>
+                  <CheckCircle2 className="h-3 w-3" />
+                </Button>
+                <Button variant="outline" size="icon-sm" className="h-6 w-6 hover:border-destructive hover:text-destructive" title="Reject KYC" onClick={async () => { const reason = prompt('Rejection reason:'); if (reason) { try { await userService.rejectKyc(u._id, reason); toast.success('KYC rejected'); load(); } catch { toast.error('Failed'); } } }}>
+                  <XCircle className="h-3 w-3" />
+                </Button>
+              </div>
+            )}
+          </div>
+        );
+      },
+    },
     { key: 'createdAt', header: 'Joined', render: (u) => <span className="text-xs text-muted-foreground">{formatDate(u.createdAt)}</span> },
     {
       key: 'actions', header: 'Actions',

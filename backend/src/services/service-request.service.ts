@@ -1,14 +1,16 @@
 import ServiceRequest, { IServiceRequest } from '../models/service-request.model';
 import { NotFoundError } from '../errors/app-error';
+import { v4 as uuidv4 } from 'uuid';
 
 class ServiceRequestService {
-  private async generateRequestNumber(): Promise<string> {
-    const count = await ServiceRequest.countDocuments();
-    return `SRV-${String(count + 1).padStart(6, '0')}`;
+  private generateRequestNumber(): string {
+    const timestamp = Date.now().toString(36).toUpperCase();
+    const random = uuidv4().slice(0, 6).toUpperCase();
+    return `SRV-${timestamp}-${random}`;
   }
 
   async create(data: Partial<IServiceRequest>): Promise<IServiceRequest> {
-    const requestNumber = await this.generateRequestNumber();
+    const requestNumber = this.generateRequestNumber();
     return ServiceRequest.create({ ...data, requestNumber });
   }
 
@@ -23,11 +25,12 @@ class ServiceRequestService {
 
     if (status) filter.status = status;
     if (search) {
+      const escaped = search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
       filter.$or = [
-        { customerName: { $regex: search, $options: 'i' } },
-        { customerEmail: { $regex: search, $options: 'i' } },
-        { requestNumber: { $regex: search, $options: 'i' } },
-        { deviceModel: { $regex: search, $options: 'i' } },
+        { customerName: { $regex: escaped, $options: 'i' } },
+        { customerEmail: { $regex: escaped, $options: 'i' } },
+        { requestNumber: { $regex: escaped, $options: 'i' } },
+        { deviceModel: { $regex: escaped, $options: 'i' } },
       ];
     }
 

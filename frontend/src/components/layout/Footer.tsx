@@ -1,5 +1,7 @@
+'use client';
 import Link from 'next/link';
 import { HiOutlineMail, HiOutlinePhone, HiOutlineLocationMarker } from 'react-icons/hi';
+import { useSettingsStore } from '@/store/settings.store';
 
 const footerLinks = {
   shop: [
@@ -23,6 +25,12 @@ const footerLinks = {
 };
 
 export default function Footer() {
+  const { settings } = useSettingsStore();
+  const siteName = settings?.siteName || 'AMOHA';
+  const contactEmail = settings?.contactEmail || 'support@amoha.com';
+  const contactPhone = settings?.contactPhone || '+91 98765 43210';
+  const address = settings?.address || 'Mumbai, India';
+
   return (
     <footer className="border-t border-gray-200 bg-gray-50 dark:border-white/5 dark:bg-surface-50">
       <div className="page-container py-10 lg:py-14">
@@ -30,28 +38,32 @@ export default function Footer() {
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" prefetch={true} className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 font-bold text-white">
-                A
-              </div>
+              {settings?.logo ? (
+                <img src={settings.logo} alt={siteName} className="h-9 w-9 rounded-xl object-contain" />
+              ) : (
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary-500 to-accent-500 font-bold text-white">
+                  {siteName.charAt(0)}
+                </div>
+              )}
               <span className="text-lg font-bold text-gray-900 dark:text-white">
-                AMOHA<span className="text-primary-400">.</span>
+                {siteName}<span className="text-primary-400">.</span>
               </span>
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-gray-500">
               Your premium destination for the latest smartphones at unbeatable prices with fast delivery.
             </p>
             <div className="mt-5 space-y-2.5">
-              <a href="mailto:support@amoha.com" className="flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-primary-400">
+              <a href={`mailto:${contactEmail}`} className="flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-primary-400">
                 <HiOutlineMail className="h-4 w-4" />
-                support@amoha.com
+                {contactEmail}
               </a>
-              <a href="tel:+919876543210" className="flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-primary-400">
+              <a href={`tel:${contactPhone.replace(/\s/g, '')}`} className="flex items-center gap-2 text-sm text-gray-500 transition-colors hover:text-primary-400">
                 <HiOutlinePhone className="h-4 w-4" />
-                +91 98765 43210
+                {contactPhone}
               </a>
               <span className="flex items-center gap-2 text-sm text-gray-500">
                 <HiOutlineLocationMarker className="h-4 w-4 flex-shrink-0" />
-                Mumbai, India
+                {address}
               </span>
             </div>
           </div>
@@ -102,10 +114,10 @@ export default function Footer() {
         {/* Bottom */}
         <div className="mt-10 flex flex-col items-center justify-between gap-4 border-t border-gray-200 pt-8 dark:border-white/5 sm:flex-row">
           <p className="text-sm text-gray-500 dark:text-gray-600">
-            © {new Date().getFullYear()} AMOHA Mobiles. All rights reserved.
+            &copy; {new Date().getFullYear()} {siteName} Mobiles. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <span className="text-xs text-gray-500 dark:text-gray-400 dark:text-gray-600">Powered by Next.js</span>
+            <span className="text-xs text-gray-500 dark:text-gray-400">Powered by Next.js</span>
           </div>
         </div>
       </div>

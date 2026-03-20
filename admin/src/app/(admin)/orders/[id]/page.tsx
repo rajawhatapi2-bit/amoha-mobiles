@@ -4,11 +4,12 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
-import { ArrowLeft, CheckCircle, Clock, Package, Truck, MapPin, CreditCard } from 'lucide-react';
+import { ArrowLeft, CheckCircle, Clock, Package, Truck, MapPin, CreditCard, ExternalLink } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import { orderService } from '@/services/order.service';
 import { formatCurrency, formatDateTime, getOrderStatusColor, getPaymentStatusColor } from '@/lib/utils';
 import type { Order, OrderStatus } from '@/types';
@@ -28,13 +29,41 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState<OrderStatus | ''>('');
+  const [trackingNumber, setTrackingNumber] = useState('');
+  const [trackingUrl, setTrackingUrl] = useState('');
+  const [logisticsPartner, setLogisticsPartner] = useState('');
+  const [estimatedDelivery, setEstimatedDelivery] = useState('');
+  const [updatingTracking, setUpdatingTracking] = useState(false);
 
   useEffect(() => {
     orderService.getById(params.id)
-      .then((o) => { setOrder(o); setSelectedStatus(''); })
+      .then((o) => {
+        setOrder(o);
+        setSelectedStatus('');
+        setTrackingNumber(o.trackingNumber || '');
+        setTrackingUrl(o.trackingUrl || '');
+        setLogisticsPartner(o.logisticsPartner || '');
+        setEstimatedDelivery(o.estimatedDelivery ? o.estimatedDelivery.split('T')[0] : '');
+      })
       .catch(() => toast.error('Failed to load order'))
       .finally(() => setLoading(false));
   }, [params.id]);
+
+  const handleUpdateTracking = async () => {
+    if (!order) return;
+    setUpdatingTracking(true);
+    try {
+      const updated = await orderService.updateTracking(order._id, {
+        trackingNumber: trackingNumber || undefined,
+        trackingUrl: trackingUrl || undefined,
+        logisticsPartner: logisticsPartner || undefined,
+        estimatedDelivery: estimatedDelivery || undefined,
+      });
+      setOrder(updated);
+      toast.success('Tracking info updated');
+    } catch { toast.error('Failed to update tracking'); }
+    finally { setUpdatingTracking(false); }
+  };
 
   const handleUpdateStatus = async () => {
     if (!selectedStatus || !order) return;
@@ -156,6 +185,44 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
             </Card>
           )}
 
+          {/* Tracking Info */}
+          <Card>
+            <CardHeader><CardTitle className="flex items-center gap-2"><Truck className="h-4 w-4" />Tracking Info</CardTitle></CardHeader>
+            <CardContent className="space-y-3">
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Logistics Partner</label>
+                <Select value={logisticsPartner} onValueChange={setLogisticsPartner}>
+                  <SelectTrigger><SelectValue placeholder="Select partner" /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="dhl">DHL</SelectItem>
+                    <SelectItem value="professional_courier">Professional Courier</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Tracking Number</label>
+                <Input value={trackingNumber} onChange={(e) => setTrackingNumber(e.target.value)} placeholder="Enter tracking number" />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Tracking URL</label>
+                <Input value={trackingUrl} onChange={(e) => setTrackingUrl(e.target.value)} placeholder="https://..." />
+              </div>
+              <div>
+                <label className="text-xs font-medium text-muted-foreground">Estimated Delivery</label>
+                <Input type="date" value={estimatedDelivery} onChange={(e) => setEstimatedDelivery(e.target.value)} />
+              </div>
+              <Button className="w-full" onClick={handleUpdateTracking} loading={updatingTracking}>
+                Save Tracking Info
+              </Button>
+              {order.trackingUrl && (
+                <a href={order.trackingUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-primary hover:underline">
+                  <ExternalLink className="h-3 w-3" /> Open tracking link
+                </a>
+              )}
+            </CardContent>
+          </Card>
+
           {/* Summary */}
           <Card>
             <CardHeader><CardTitle>Order Summary</CardTitle></CardHeader>
@@ -167,9 +234,27 @@ export default function OrderDetailPage({ params }: { params: { id: string } }) 
               <div className="pt-2 space-y-1">
                 <div className="flex items-center gap-2">
                   <CreditCard className="h-3.5 w-3.5 text-muted-foreground" />
-                  <span className="text-xs text-muted-foreground">{order.paymentMethod}</span>
+                  <span className="text-xs text-muted-foreground capitalize">{order.paymentMethod === 'razorpay' ? 'Razorpay' : order.paymentMethod}</span>
                   <span className={`ml-auto inline-flex rounded-full border px-2 py-0.5 text-[10px] font-semibold ${getPaymentStatusColor(order.paymentStatus)}`}>{order.paymentStatus}</span>
                 </div>
+                {order.razorpayPaymentId && (
+                  <div className="flex items-start gap-2 pt-1">
+                    <CreditCard className="h-3.5 w-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-[10px] text-muted-foreground">Razorpay Payment ID</p>
+                      <p className="text-xs font-mono text-foreground break-all">{order.razorpayPaymentId}</p>
+                    </div>
+                  </div>
+                )}
+                {order.razorpayOrderId && (
+                  <div className="flex items-start gap-2 pt-1">
+                    <Package className="h-3.5 w-3.5 text-muted-foreground mt-0.5 flex-shrink-0" />
+                    <div>
+                      <p className="text-[10px] text-muted-foreground">Razorpay Order ID</p>
+                      <p className="text-xs font-mono text-foreground break-all">{order.razorpayOrderId}</p>
+                    </div>
+                  </div>
+                )}
                 <div className="flex items-center gap-2">
                   <Package className="h-3.5 w-3.5 text-muted-foreground" />
                   <span className={`text-[10px] font-semibold inline-flex rounded-full border px-2 py-0.5 ${getOrderStatusColor(order.orderStatus)}`}>{order.orderStatus.replace(/_/g, ' ')}</span>

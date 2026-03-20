@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
-import { HiOutlineChevronRight } from 'react-icons/hi';
+import { HiOutlineChevronRight, HiOutlineViewGrid } from 'react-icons/hi';
 import type { Category } from '@/types';
 import { categoryService } from '@/services/category.service';
 import { useProducts } from '@/hooks/useProducts';
@@ -77,7 +77,9 @@ export default function CategoryPage() {
               </>
             ) : (
               <div className="glass-card flex flex-col items-center justify-center py-20 text-center">
-                <p className="text-5xl">📂</p>
+                <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/5">
+                  <HiOutlineViewGrid className="h-8 w-8 text-gray-400" />
+                </div>
                 <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">No products in this category</h3>
                 <p className="mt-1 text-sm text-gray-500">Check back later or browse other categories.</p>
                 <Link href="/products" className="mt-4 rounded-xl bg-primary-600 px-6 py-2.5 text-sm font-semibold text-white">

@@ -1,5 +1,5 @@
 import apiClient from '@/lib/api-client';
-import type { Order, OrdersResponse, Address, ApiResponse } from '@/types';
+import type { Order, OrdersResponse, Address, ApiResponse, RazorpayOrderResponse } from '@/types';
 
 export const orderService = {
   create: async (orderData: {
@@ -10,6 +10,28 @@ export const orderService = {
     const { data } = await apiClient.post<ApiResponse<Order>>(
       '/orders',
       orderData,
+    );
+    return data.data;
+  },
+
+  createRazorpayOrder: async (couponCode?: string): Promise<RazorpayOrderResponse> => {
+    const { data } = await apiClient.post<ApiResponse<RazorpayOrderResponse>>(
+      '/payment/create-order',
+      { couponCode },
+    );
+    return data.data;
+  },
+
+  verifyPayment: async (verifyData: {
+    razorpayOrderId: string;
+    razorpayPaymentId: string;
+    razorpaySignature: string;
+    shippingAddress: Address;
+    couponCode?: string;
+  }): Promise<Order> => {
+    const { data } = await apiClient.post<ApiResponse<Order>>(
+      '/payment/verify',
+      verifyData,
     );
     return data.data;
   },

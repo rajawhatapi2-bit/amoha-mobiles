@@ -22,7 +22,8 @@ export default function WishlistPage() {
   if (!isAuthenticated) {
     return (
       <div className="page-container flex flex-col items-center justify-center py-32 text-center">
-        <p className="text-5xl">🔐</p>
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/5 mx-auto">
+        </div>
         <h2 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Login Required</h2>
         <p className="mt-2 text-sm text-gray-500">Please sign in to view your wishlist.</p>
         <Link href="/login" className="mt-6 rounded-xl bg-primary-600 px-8 py-3 text-sm font-semibold text-white hover:bg-primary-500">

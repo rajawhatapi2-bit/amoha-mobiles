@@ -22,4 +22,12 @@ export const userService = {
   delete: async (id: string): Promise<void> => {
     await apiClient.delete(`/admin/users/${id}`);
   },
+  verifyKyc: async (id: string): Promise<User> => {
+    const { data } = await apiClient.patch<ApiResponse<User>>(`/users/${id}/kyc/verify`);
+    return data.data;
+  },
+  rejectKyc: async (id: string, rejectionReason: string): Promise<User> => {
+    const { data } = await apiClient.patch<ApiResponse<User>>(`/users/${id}/kyc/reject`, { rejectionReason });
+    return data.data;
+  },
 };

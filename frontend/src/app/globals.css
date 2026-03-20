@@ -77,7 +77,6 @@
     background-color: var(--background);
     color: var(--foreground);
     font-family: 'Inter', system-ui, sans-serif;
-    overflow-x: hidden;
   }
 
   ::selection {
@@ -100,6 +99,30 @@
 
   ::-webkit-scrollbar-thumb:hover {
     background: var(--scrollbar-thumb-hover);
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-thin-desktop {
+    scrollbar-width: thin;
+    scrollbar-color: var(--scrollbar-thumb) transparent;
+  }
+  .scrollbar-thin-desktop::-webkit-scrollbar {
+    height: 4px;
+  }
+  .scrollbar-thin-desktop::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-thin-desktop::-webkit-scrollbar-thumb {
+    background: var(--scrollbar-thumb);
+    border-radius: 9999px;
   }
 }
 

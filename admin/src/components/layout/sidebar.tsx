@@ -5,7 +5,8 @@ import { usePathname, useRouter } from 'next/navigation';
 import {
   LayoutDashboard, Package, Tags, Award, ShoppingCart,
   Users, Ticket, Image, Star, Settings, ChevronLeft,
-  ChevronRight, Smartphone, LogOut, Menu, X, Wrench, Mail,
+  ChevronRight, Smartphone, LogOut, Menu, X, Wrench, Mail, Bell,
+  Eye, AlertCircle, Users2, Barcode,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { authService } from '@/services/auth.service';
@@ -23,6 +24,11 @@ const NAV_ITEMS = [
   { href: '/reviews', label: 'Reviews', icon: Star },
   { href: '/service-requests', label: 'Service Requests', icon: Wrench },
   { href: '/contact-messages', label: 'Contact Messages', icon: Mail },
+  { href: '/notifications', label: 'Notifications', icon: Bell },
+  { href: '/product-views', label: 'User Activity', icon: Eye },
+  { href: '/abandoned-carts', label: 'Abandoned Carts', icon: AlertCircle },
+  { href: '/crm', label: 'CRM', icon: Users2 },
+  { href: '/barcode', label: 'Barcode & SKU', icon: Barcode },
   { href: '/settings', label: 'Settings', icon: Settings },
 ];
 

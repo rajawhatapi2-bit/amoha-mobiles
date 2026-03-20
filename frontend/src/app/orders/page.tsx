@@ -50,7 +50,8 @@ export default function OrdersPage() {
   if (!isAuthenticated) {
     return (
       <div className="page-container flex flex-col items-center justify-center py-32 text-center">
-        <p className="text-5xl">🔐</p>
+        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/5 mx-auto">
+        </div>
         <h2 className="mt-4 text-2xl font-bold text-gray-900 dark:text-white">Login Required</h2>
         <p className="mt-2 text-sm text-gray-500">Please sign in to view your orders.</p>
         <Link href="/login" className="mt-6 rounded-xl bg-primary-600 px-8 py-3 text-sm font-semibold text-white hover:bg-primary-500">Sign In</Link>
@@ -137,6 +138,35 @@ export default function OrdersPage() {
                       </div>
                     </div>
 
+                    {/* Tracking Info */}
+                    {order.trackingNumber && (
+                      <div className="mt-4 border-t border-gray-200 dark:border-white/5 pt-4">
+                        <p className="text-xs font-medium text-gray-500 mb-2">Tracking Information</p>
+                        <div className="rounded-lg bg-gray-100 dark:bg-white/5 p-3 space-y-1.5">
+                          {order.logisticsPartner && (
+                            <div className="flex justify-between text-xs">
+                              <span className="text-gray-500">Courier</span>
+                              <span className="text-gray-600 dark:text-gray-300 capitalize">{order.logisticsPartner.replace(/_/g, ' ')}</span>
+                            </div>
+                          )}
+                          <div className="flex justify-between text-xs">
+                            <span className="text-gray-500">Tracking No.</span>
+                            <span className="font-mono text-gray-600 dark:text-gray-300">{order.trackingNumber}</span>
+                          </div>
+                          {order.trackingUrl && (
+                            <a
+                              href={order.trackingUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="inline-flex items-center gap-1 text-xs font-medium text-primary-400 hover:text-primary-300 mt-1"
+                            >
+                              Track your order →
+                            </a>
+                          )}
+                        </div>
+                      </div>
+                    )}
+
                     {/* Status History */}
                     {order.statusHistory && order.statusHistory.length > 0 && (
                       <div className="mt-4 border-t border-gray-200 dark:border-white/5 pt-4">
@@ -173,7 +203,8 @@ export default function OrdersPage() {
         </>
       ) : (
         <div className="glass-card flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-5xl">📦</p>
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/5 mx-auto">
+          </div>
           <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">No orders yet</h3>
           <p className="mt-1 text-sm text-gray-500">Your order history will appear here.</p>
           <Link href="/products" className="mt-6 rounded-xl bg-primary-600 px-8 py-3 text-sm font-semibold text-white hover:bg-primary-500">

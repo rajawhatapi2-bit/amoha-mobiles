@@ -13,6 +13,17 @@ export interface IAddress {
   type: 'home' | 'work' | 'other';
 }
 
+export interface IKyc {
+  status: 'not_submitted' | 'pending' | 'verified' | 'rejected';
+  documentType?: 'aadhaar' | 'pan' | 'passport' | 'voter_id';
+  documentNumber?: string;
+  documentImage?: string;
+  fullName?: string;
+  submittedAt?: Date;
+  verifiedAt?: Date;
+  rejectionReason?: string;
+}
+
 export interface IUser extends Document {
   name: string;
   email: string;
@@ -23,6 +34,7 @@ export interface IUser extends Document {
   role: 'user' | 'admin';
   isVerified: boolean;
   isBlocked: boolean;
+  kyc: IKyc;
   refreshToken?: string;
   resetPasswordToken?: string;
   resetPasswordExpiry?: Date;
@@ -63,6 +75,16 @@ const userSchema = new Schema<IUser>(
     role: { type: String, enum: ['user', 'admin'], default: 'user', index: true },
     isVerified: { type: Boolean, default: false },
     isBlocked: { type: Boolean, default: false },
+    kyc: {
+      status: { type: String, enum: ['not_submitted', 'pending', 'verified', 'rejected'], default: 'not_submitted' },
+      documentType: { type: String, enum: ['aadhaar', 'pan', 'passport', 'voter_id'] },
+      documentNumber: { type: String, trim: true },
+      documentImage: { type: String },
+      fullName: { type: String, trim: true },
+      submittedAt: { type: Date },
+      verifiedAt: { type: Date },
+      rejectionReason: { type: String, trim: true },
+    },
     refreshToken: { type: String, select: false },
     resetPasswordToken: { type: String, select: false },
     resetPasswordExpiry: { type: Date, select: false },

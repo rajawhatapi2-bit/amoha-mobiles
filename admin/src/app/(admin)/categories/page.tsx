@@ -15,13 +15,14 @@ import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { categoryService } from '@/services/category.service';
+import { ImageUploader } from '@/components/shared/image-uploader';
 import { formatDate } from '@/lib/utils';
 import type { Category } from '@/types';
 
 const schema = z.object({
   name: z.string().min(2, 'Name required'),
   description: z.string().optional(),
-  image: z.string().url('Must be a valid URL').min(1, 'Image URL is required'),
+  image: z.string().min(1, 'Image is required'),
   isActive: z.boolean().default(true),
 });
 type FormData = z.infer<typeof schema>;
@@ -113,7 +114,8 @@ export default function CategoriesPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Input label="Category Name" placeholder="e.g. Smartphones" error={errors.name?.message} {...register('name')} />
             <Textarea label="Description" placeholder="Brief description..." {...register('description')} />
-            <Input label="Image URL" placeholder="https://..." error={errors.image?.message} {...register('image')} />
+            <ImageUploader value={watch('image')} onChange={(url) => setValue('image', url)} folder="categories" label="Category Image" />
+            {errors.image && <p className="text-xs text-destructive -mt-2">{errors.image.message}</p>}
             <div className="flex items-center justify-between">
               <label className="text-sm font-medium">Active</label>
               <Switch checked={watch('isActive')} onCheckedChange={(v) => setValue('isActive', v)} />

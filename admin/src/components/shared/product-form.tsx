@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 import { ArrowLeft, Upload, X, Plus } from 'lucide-react';
 import Link from 'next/link';
 import { PageHeader } from '@/components/shared/page-header';
+import { MultiImageUploader } from '@/components/shared/image-uploader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -28,6 +29,7 @@ const schema = z.object({
   price: z.coerce.number().min(1, 'Price must be > 0'),
   originalPrice: z.coerce.number().min(1, 'Original price must be > 0'),
   stock: z.coerce.number().min(0, 'Stock cannot be negative'),
+  warranty: z.string().optional(),
   tags: z.string().optional(),
   colors: z.string().optional(),
   isFeatured: z.boolean().default(false),
@@ -66,6 +68,7 @@ export function ProductForm({ productId }: Props) {
         setValue('price', p.price);
         setValue('originalPrice', p.originalPrice);
         setValue('stock', p.stock);
+        setValue('warranty', p.warranty || '');
         setValue('tags', p.tags.join(', '));
         setValue('colors', p.colors.join(', '));
         setValue('isFeatured', p.isFeatured);
@@ -112,6 +115,7 @@ export function ProductForm({ productId }: Props) {
         colors: data.colors ? data.colors.split(',').map((c: string) => c.trim()).filter(Boolean) : [],
         isFeatured: data.isFeatured,
         isTrending: data.isTrending,
+        warranty: data.warranty || '',
         images: existingImages.length > 0 ? existingImages : ['https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=600&h=600&fit=crop'],
         thumbnail: existingImages[0] || 'https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=300&h=300&fit=crop',
       };
@@ -174,6 +178,7 @@ export function ProductForm({ productId }: Props) {
                 </div>
                 <Input label="Tags (comma separated)" placeholder="smartphone, 5g, flagship" {...register('tags')} />
                 <Input label="Colors (comma separated)" placeholder="Black, Silver, Gold" {...register('colors')} />
+                <Input label="Warranty" placeholder="e.g. 1 Year, 6 Months" {...register('warranty')} />
               </CardContent>
             </Card>
 
@@ -206,46 +211,12 @@ export function ProductForm({ productId }: Props) {
             <Card>
               <CardHeader><CardTitle>Product Images</CardTitle></CardHeader>
               <CardContent>
-                <div className="space-y-2">
-                  <div className="flex gap-2">
-                    <Input
-                      placeholder="Paste image URL..."
-                      id="imageUrlInput"
-                      onKeyDown={(e) => {
-                        if (e.key === 'Enter') {
-                          e.preventDefault();
-                          const input = e.target as HTMLInputElement;
-                          const url = input.value.trim();
-                          if (url) {
-                            setExistingImages((p) => [...p, url]);
-                            input.value = '';
-                          }
-                        }
-                      }}
-                    />
-                    <Button type="button" variant="outline" size="sm" onClick={() => {
-                      const input = document.getElementById('imageUrlInput') as HTMLInputElement;
-                      const url = input?.value?.trim();
-                      if (url) {
-                        setExistingImages((p) => [...p, url]);
-                        input.value = '';
-                      }
-                    }}>
-                      <Plus className="h-3.5 w-3.5" />
-                    </Button>
-                  </div>
-                  <p className="text-xs text-muted-foreground">Add image URLs and press Enter or click +</p>
-                </div>
-                <div className="grid grid-cols-3 gap-2 mt-3">
-                  {existingImages.map((url, i) => (
-                    <div key={i} className="relative aspect-square rounded-lg overflow-hidden bg-secondary">
-                      <img src={url} alt="" className="w-full h-full object-cover" />
-                      <button type="button" onClick={() => setExistingImages((p) => p.filter((_, idx) => idx !== i))} className="absolute top-1 right-1 bg-destructive rounded-full p-0.5">
-                        <X className="h-2.5 w-2.5 text-white" />
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                <MultiImageUploader
+                  value={existingImages}
+                  onChange={setExistingImages}
+                  folder="products"
+                  max={10}
+                />
               </CardContent>
             </Card>
 

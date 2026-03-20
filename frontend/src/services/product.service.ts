@@ -90,4 +90,8 @@ export const productService = {
   ): Promise<void> => {
     await apiClient.post(`/products/${productId}/reviews`, review);
   },
+
+  trackView: async (productId: string): Promise<void> => {
+    await apiClient.post('/products/track-view', { productId });
+  },
 };

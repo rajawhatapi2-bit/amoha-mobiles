@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useEffect } from 'react';
 import { HiOutlineRefresh, HiOutlineHome } from 'react-icons/hi';
@@ -38,7 +38,7 @@ export default function Error({
           </button>
           <Link
             href="/"
-            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 px-8 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300 dark:hover:border-white/20 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white"
+            className="inline-flex items-center gap-2 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 px-8 py-3 text-sm font-medium text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300 dark:hover:border-white/20 hover:text-gray-900 dark:hover:text-white"
           >
             <HiOutlineHome className="h-4 w-4" />
             Go Home
@@ -48,3 +48,4 @@ export default function Error({
     </div>
   );
 }
+

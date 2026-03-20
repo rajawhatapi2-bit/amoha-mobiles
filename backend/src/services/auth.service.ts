@@ -2,6 +2,8 @@ import User, { IUser } from '../models/user.model';
 import { hashPassword, comparePassword } from '../utils/password.util';
 import { generateTokenPair, verifyRefreshToken, TokenPayload } from '../utils/jwt.util';
 import { ConflictError, UnauthorizedError, NotFoundError, BadRequestError } from '../errors/app-error';
+import { sendPasswordResetEmail } from '../utils/email.util';
+import env from '../config/env';
 import { v4 as uuidv4 } from 'uuid';
 
 class AuthService {
@@ -44,6 +46,10 @@ class AuthService {
       throw new UnauthorizedError('Invalid email or password');
     }
 
+    if (user.isBlocked) {
+      throw new UnauthorizedError('Your account has been blocked. Please contact support.');
+    }
+
     const isMatch = await comparePassword(password, user.password);
     if (!isMatch) {
       throw new UnauthorizedError('Invalid email or password');
@@ -68,6 +74,12 @@ class AuthService {
     const user = await User.findById(decoded.userId).select('+refreshToken');
     if (!user || user.refreshToken !== refreshToken) {
       throw new UnauthorizedError('Invalid refresh token');
+    }
+
+    if (user.isBlocked) {
+      user.refreshToken = undefined;
+      await user.save();
+      throw new UnauthorizedError('Your account has been blocked. Please contact support.');
     }
 
     const payload: TokenPayload = { userId: user._id.toString(), role: user.role };
@@ -133,9 +145,9 @@ class AuthService {
     user.resetPasswordExpiry = new Date(Date.now() + 3600000); // 1 hour
     await user.save();
 
-    // TODO: Send email with reset token
-    // In production, send email via nodemailer/SendGrid/SES
-    return resetToken;
+    // Send password reset email
+    const frontendUrl = env.CORS_ORIGIN.split(',')[0].trim();
+    sendPasswordResetEmail(user.email, user.name, resetToken, frontendUrl).catch(() => {});
   }
 
   async resetPassword(token: string, newPassword: string) {

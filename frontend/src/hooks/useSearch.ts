@@ -12,7 +12,7 @@ export function useSearch() {
   const debounceRef = useRef<NodeJS.Timeout | null>(null);
 
   const searchProducts = useCallback(async (searchQuery: string) => {
-    if (searchQuery.trim().length < 2) {
+    if (searchQuery.trim().length < 1) {
       setSuggestions([]);
       setShowSuggestions(false);
       return;

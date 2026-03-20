@@ -1,12 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import contactService from '../services/contact.service';
 import { sendSuccess, sendCreated, sendMessage } from '../utils/response.util';
+import { notifyContact } from '../utils/notify';
 
 class ContactController {
   // Public: submit contact message
   async create(req: Request, res: Response, next: NextFunction) {
     try {
       const message = await contactService.create(req.body);
+      notifyContact(message.name, message.subject, message._id.toString());
       sendCreated(res, message, 'Message sent successfully');
     } catch (error) {
       next(error);

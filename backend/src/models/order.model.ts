@@ -46,6 +46,9 @@ export interface IOrder extends Document {
   trackingNumber?: string;
   trackingUrl?: string;
   logisticsPartner?: 'dhl' | 'professional_courier' | 'other';
+  razorpayOrderId?: string;
+  razorpayPaymentId?: string;
+  razorpaySignature?: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -116,6 +119,9 @@ const orderSchema = new Schema<IOrder>(
       type: String,
       enum: ['dhl', 'professional_courier', 'other'],
     },
+    razorpayOrderId: { type: String, index: true, sparse: true },
+    razorpayPaymentId: { type: String },
+    razorpaySignature: { type: String },
   },
   {
     timestamps: true,

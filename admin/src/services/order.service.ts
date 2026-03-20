@@ -26,4 +26,13 @@ export const orderService = {
     });
     return data.data;
   },
+  updateTracking: async (id: string, tracking: {
+    trackingNumber?: string;
+    trackingUrl?: string;
+    logisticsPartner?: string;
+    estimatedDelivery?: string;
+  }): Promise<Order> => {
+    const { data } = await apiClient.patch<ApiResponse<Order>>(`/admin/orders/${id}/tracking`, tracking);
+    return data.data;
+  },
 };

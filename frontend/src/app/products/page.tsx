@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
@@ -175,7 +175,7 @@ export default function ProductsPage() {
     );
   }
   if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
-    const label = `₹${(filters.priceMin || 0).toLocaleString()} – ₹${(filters.priceMax || 200000).toLocaleString()}`;
+    const label = `â‚¹${(filters.priceMin || 0).toLocaleString()} â€“ â‚¹${(filters.priceMax || 200000).toLocaleString()}`;
     activeFilterTags.push({
       label: `Price: ${label}`,
       onRemove: () => handleFilterChange({ priceMin: undefined, priceMax: undefined }),
@@ -183,7 +183,7 @@ export default function ProductsPage() {
   }
   if (filters.rating !== undefined) {
     activeFilterTags.push({
-      label: `${filters.rating}★ & above`,
+      label: `${filters.rating}â˜… & above`,
       onRemove: () => handleFilterChange({ rating: undefined }),
     });
   }
@@ -227,16 +227,16 @@ export default function ProductsPage() {
       {categories.length > 0 && (
         <div className="border-b border-gray-100 dark:border-white/[0.05] bg-gray-50 dark:bg-white/[0.015]">
           <div className="page-container py-4">
-            <div className="flex items-center gap-2.5 overflow-x-auto pb-1 scrollbar-hide">
+            <div className="flex items-center gap-2.5 overflow-x-auto pb-2 scrollbar-hide md:scrollbar-thin-desktop">
               <button
                 onClick={() => handleCategoryFilter(null)}
                 className={`flex flex-shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
                   !activeCategory
                     ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/25'
-                    : 'border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.04] text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-white/20 hover:bg-white/[0.08] hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white'
+                    : 'border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.04] text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-white/20 hover:bg-white/[0.08] hover:text-gray-900 dark:hover:text-white'
                 }`}
               >
-                📱 All
+                All
               </button>
               {categories.map((cat) => (
                 <button
@@ -245,7 +245,7 @@ export default function ProductsPage() {
                   className={`flex flex-shrink-0 items-center gap-2 rounded-full px-4 py-2 text-sm font-medium transition-all duration-200 ${
                     activeCategory === cat.slug
                       ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/25'
-                      : 'border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.04] text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-white/20 hover:bg-white/[0.08] hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white'
+                      : 'border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.04] text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-white/20 hover:bg-white/[0.08] hover:text-gray-900 dark:hover:text-white'
                   }`}
                 >
                   <div className="relative h-5 w-5 overflow-hidden rounded-full ring-1 ring-white/10">
@@ -290,7 +290,7 @@ export default function ProductsPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Grid toggle — desktop only */}
+            {/* Grid toggle â€” desktop only */}
             <div className="hidden items-center gap-0.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.04] p-1 lg:flex">
               <button
                 onClick={() => setGridCols(3)}
@@ -360,7 +360,7 @@ export default function ProductsPage() {
               /* ===== Empty State ===== */
               <div className="flex flex-col items-center justify-center rounded-2xl border border-gray-100 dark:border-white/[0.06] bg-gray-50 dark:bg-white/[0.02] py-24 text-center">
                 <div className="flex h-20 w-20 items-center justify-center rounded-2xl bg-gray-100 dark:bg-white/5">
-                  <span className="text-4xl">📱</span>
+                  <HiOutlineViewGrid className="h-8 w-8 text-gray-400" />
                 </div>
                 <h3 className="mt-6 text-xl font-bold text-gray-900 dark:text-white">No products found</h3>
                 <p className="mt-2 max-w-sm text-sm text-gray-500">
@@ -377,7 +377,7 @@ export default function ProductsPage() {
                   </button>
                   <Link
                     href="/"
-                    className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 px-6 py-3 text-sm font-medium text-gray-600 dark:text-gray-300 transition-all hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white"
+                    className="rounded-xl border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 px-6 py-3 text-sm font-medium text-gray-600 dark:text-gray-300 transition-all hover:border-gray-300 dark:hover:border-white/20 hover:bg-gray-200 dark:hover:bg-white/10 hover:text-gray-900 dark:hover:text-white"
                   >
                     Go Home
                   </Link>
@@ -389,3 +389,4 @@ export default function ProductsPage() {
     </div>
   );
 }
+

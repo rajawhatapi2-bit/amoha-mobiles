@@ -55,8 +55,7 @@ function SearchContent() {
         </>
       ) : (
         <div className="glass-card flex flex-col items-center justify-center py-20 text-center">
-          <p className="text-5xl">🔍</p>
-          <h3 className="mt-4 text-lg font-semibold text-gray-900 dark:text-white">No results found</h3>
+          <h3 className="text-lg font-semibold text-gray-900 dark:text-white">No results found</h3>
           <p className="mt-1 max-w-md text-sm text-gray-500">
             We couldn&apos;t find any mobiles matching &quot;{query}&quot;. Try different keywords.
           </p>

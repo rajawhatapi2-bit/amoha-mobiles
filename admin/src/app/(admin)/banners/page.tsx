@@ -8,6 +8,7 @@ import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight } from 'lucide-react';
 import { PageHeader } from '@/components/shared/page-header';
 import { DataTable, Column } from '@/components/shared/data-table';
 import { ConfirmModal } from '@/components/shared/confirm-modal';
+import { ImageUploader } from '@/components/shared/image-uploader';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -21,7 +22,7 @@ import type { Banner } from '@/types';
 const schema = z.object({
   title: z.string().min(2, 'Title required'),
   subtitle: z.string().optional(),
-  image: z.string().min(1, 'Image URL required'),
+  image: z.string().min(1, 'Image required'),
   link: z.string().optional(),
   position: z.enum(['hero', 'sidebar', 'popup', 'footer']),
   order: z.coerce.number().min(0),
@@ -135,7 +136,8 @@ export default function BannersPage() {
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <Input label="Title" placeholder="Summer Sale" error={errors.title?.message} {...register('title')} />
             <Input label="Subtitle" placeholder="Up to 50% off" {...register('subtitle')} />
-            <Input label="Image URL" placeholder="https://..." error={errors.image?.message} {...register('image')} />
+            <ImageUploader value={watch('image')} onChange={(url) => setValue('image', url)} folder="banners" label="Banner Image" />
+            {errors.image?.message && <p className="text-xs text-destructive">{errors.image.message}</p>}
             <Input label="Link URL" placeholder="/products?category=sale" {...register('link')} />
             <div className="grid grid-cols-2 gap-3">
               <div>

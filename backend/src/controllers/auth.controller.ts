@@ -2,12 +2,14 @@ import { Request, Response, NextFunction } from 'express';
 import authService from '../services/auth.service';
 import { AuthenticatedRequest } from '../types';
 import { sendSuccess, sendMessage } from '../utils/response.util';
+import { sendWelcomeEmail, sendLoginEmail } from '../utils/email.util';
 
 class AuthController {
   async register(req: Request, res: Response, next: NextFunction) {
     try {
       const { name, email, phone, password } = req.body;
       const result = await authService.register({ name, email, phone, password });
+      sendWelcomeEmail(email, name).catch(() => {});
       res.status(201).json({
         success: true,
         message: 'Registration successful',
@@ -23,6 +25,7 @@ class AuthController {
     try {
       const { email, password } = req.body;
       const result = await authService.login(email, password);
+      sendLoginEmail(email, result.user.name).catch(() => {});
       res.status(200).json({
         success: true,
         message: 'Login successful',

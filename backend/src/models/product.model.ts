@@ -34,6 +34,8 @@ export interface IProductSpecifications {
 export interface IProduct extends Document {
   name: string;
   slug: string;
+  sku: string;
+  barcode: string;
   brand: string;
   category: string;
   description: string;
@@ -53,6 +55,7 @@ export interface IProduct extends Document {
   isFeatured: boolean;
   isTrending: boolean;
   colors: string[];
+  warranty: string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -71,6 +74,8 @@ const productSchema = new Schema<IProduct>(
   {
     name: { type: String, required: true, trim: true, index: true },
     slug: { type: String, required: true, unique: true, lowercase: true, index: true },
+    sku: { type: String, unique: true, sparse: true, trim: true, index: true },
+    barcode: { type: String, unique: true, sparse: true, trim: true, index: true },
     brand: { type: String, required: true, trim: true, index: true },
     category: { type: String, required: true, trim: true, index: true },
     description: { type: String, required: true },
@@ -109,6 +114,7 @@ const productSchema = new Schema<IProduct>(
     isFeatured: { type: Boolean, default: false },
     isTrending: { type: Boolean, default: false },
     colors: [{ type: String, trim: true }],
+    warranty: { type: String, default: '', trim: true },
   },
   {
     timestamps: true,
@@ -123,9 +129,23 @@ productSchema.index({ price: 1, ratings: -1 });
 productSchema.index({ createdAt: -1 });
 productSchema.index({ isFeatured: 1, isTrending: 1 });
 
-// Pre-save: auto-set inStock based on stock count
+// Pre-save: auto-set inStock + auto-generate SKU/barcode if missing
 productSchema.pre('save', function (next) {
   this.inStock = this.stock > 0;
+  if (!this.sku) {
+    const ts = Date.now().toString(36).toUpperCase();
+    const rand = Math.random().toString(36).substring(2, 6).toUpperCase();
+    this.sku = `AMH-${ts}-${rand}`;
+  }
+  if (!this.barcode) {
+    // Generate EAN-13 compatible 13-digit numeric barcode
+    const base = '200' + Date.now().toString().slice(-9);
+    const digits = base.split('').map(Number);
+    let sum = 0;
+    for (let i = 0; i < 12; i++) sum += digits[i] * (i % 2 === 0 ? 1 : 3);
+    const check = (10 - (sum % 10)) % 10;
+    this.barcode = base + check;
+  }
   next();
 });
 

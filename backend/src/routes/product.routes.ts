@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import productController from '../controllers/product.controller';
+import productViewController from '../controllers/product-view.controller';
 import { authenticate } from '../middleware/auth.middleware';
 import { isAdmin } from '../middleware/role.middleware';
 import { validate } from '../middleware/validate.middleware';
@@ -17,6 +18,7 @@ router.get('/:slug', productController.getBySlug);
 router.get('/', productController.getAll);
 
 // Protected routes
+router.post('/track-view', authenticate, productViewController.track);
 router.post('/:id/reviews', authenticate, validate(reviewSchema), productController.addReview);
 router.delete('/:id/reviews/:reviewId', authenticate, productController.deleteReview);
 

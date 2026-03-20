@@ -1,5 +1,6 @@
 'use client';
 
+import { Suspense } from 'react';
 import dynamic from 'next/dynamic';
 
 const LoadingBarComponent = dynamic(
@@ -8,5 +9,9 @@ const LoadingBarComponent = dynamic(
 );
 
 export function LoadingBar() {
-  return <LoadingBarComponent />;
+  return (
+    <Suspense fallback={null}>
+      <LoadingBarComponent />
+    </Suspense>
+  );
 }

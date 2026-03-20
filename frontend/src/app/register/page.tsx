@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
@@ -90,7 +90,7 @@ export default function RegisterPage() {
               <div className="relative">
                 <HiOutlineLockClosed className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-500" />
                 <input name="password" type={showPassword ? 'text' : 'password'} value={form.password} onChange={handleChange} className="glass-input pl-10 pr-10 py-3 text-sm" placeholder="Min. 6 characters" />
-                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 dark:hover:text-gray-900 dark:hover:text-white">
+                <button type="button" onClick={() => setShowPassword(!showPassword)} className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-900 dark:hover:text-white">
                   {showPassword ? <HiOutlineEyeOff className="h-4 w-4" /> : <HiOutlineEye className="h-4 w-4" />}
                 </button>
               </div>
@@ -124,3 +124,4 @@ export default function RegisterPage() {
     </div>
   );
 }
+

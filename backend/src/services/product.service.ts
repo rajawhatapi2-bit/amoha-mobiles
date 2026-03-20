@@ -52,9 +52,17 @@ class ProductService {
       query.ratings = { $gte: parseFloat(filters.rating) };
     }
 
-    // Search
+    // Search — use regex for partial matching (e.g. "sams" matches "Samsung")
     if (filters.search) {
-      query.$text = { $search: filters.search };
+      const escaped = filters.search.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      const re = new RegExp(escaped, 'i');
+      query.$or = [
+        { name: re },
+        { brand: re },
+        { description: re },
+        { tags: re },
+        { category: re },
+      ];
     }
 
     // Sort
@@ -107,13 +115,18 @@ class ProductService {
   }
 
   async searchSuggestions(query: string) {
-    if (!query || query.length < 2) return [];
+    if (!query || query.length < 1) return [];
 
-    const products = await Product.find(
-      { $text: { $search: query } },
-      { score: { $meta: 'textScore' } },
-    )
-      .sort({ score: { $meta: 'textScore' } })
+    const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp(escaped, 'i');
+
+    const products = await Product.find({
+      $or: [
+        { name: re },
+        { brand: re },
+        { tags: re },
+      ],
+    })
       .limit(8)
       .select('name slug thumbnail price brand')
       .lean();
@@ -154,7 +167,9 @@ class ProductService {
 
   async update(id: string, data: any) {
     if (data.name) {
-      data.slug = slugify(data.name, { lower: true, strict: true });
+      const baseSlug = slugify(data.name, { lower: true, strict: true });
+      const existing = await Product.findOne({ slug: baseSlug, _id: { $ne: id } });
+      data.slug = existing ? `${baseSlug}-${Date.now()}` : baseSlug;
     }
 
     const product = await Product.findByIdAndUpdate(

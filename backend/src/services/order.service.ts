@@ -99,7 +99,7 @@ class OrderService {
       items: orderItems,
       shippingAddress: data.shippingAddress,
       paymentMethod: data.paymentMethod,
-      paymentStatus: data.paymentMethod === 'cod' ? 'pending' : 'pending',
+      paymentStatus: 'pending',
       orderStatus: 'placed',
       statusHistory: [
         {
@@ -116,11 +116,17 @@ class OrderService {
       estimatedDelivery,
     });
 
-    // Reduce product stock
+    // Reduce product stock and update inStock flag
     for (const item of cart.items) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: -item.quantity },
-      });
+      const product = await Product.findByIdAndUpdate(
+        item.product,
+        { $inc: { stock: -item.quantity } },
+        { new: true },
+      );
+      if (product && product.stock <= 0) {
+        product.inStock = false;
+        await product.save();
+      }
     }
 
     // Clear the cart
@@ -178,11 +184,17 @@ class OrderService {
       message: `Order cancelled: ${reason}`,
     });
 
-    // Restore stock
+    // Restore stock and update inStock flag
     for (const item of order.items) {
-      await Product.findByIdAndUpdate(item.product, {
-        $inc: { stock: item.quantity },
-      });
+      const product = await Product.findByIdAndUpdate(
+        item.product,
+        { $inc: { stock: item.quantity } },
+        { new: true },
+      );
+      if (product && product.stock > 0) {
+        product.inStock = true;
+        await product.save();
+      }
     }
 
     // Refund coupon usage if applicable
