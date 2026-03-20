@@ -63,6 +63,7 @@ Write-Host "Admin deployed." -ForegroundColor Green
 Write-Host ""
 Write-Host "=== All done! Vercel will auto-deploy in ~2 minutes ===" -ForegroundColor Cyan
 Write-Host "  Main Repo: https://github.com/rajawhatapi2-bit/amoha-mobiles"
-Write-Host "  Frontend:  (Vercel - connect amoha-frontend repo)"
-Write-Host "  Admin:     (Vercel - connect amoha-admin repo)"
+Write-Host "  Frontend:  https://amoha-frontend.vercel.app"
+Write-Host "  Admin:     https://amoha-admin-seven.vercel.app"
+Write-Host "  Backend:   https://amoha-backend.onrender.com"
 Write-Host ""

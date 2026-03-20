@@ -21,7 +21,7 @@ services:
       - key: JWT_REFRESH_EXPIRY
         value: 7d
       - key: CORS_ORIGIN
-        value: https://frontend-demo-1-ashy.vercel.app,https://admin-olive-delta.vercel.app
+        value: https://amoha-frontend.vercel.app,https://amoha-admin-seven.vercel.app
       - key: BCRYPT_SALT_ROUNDS
         value: 12
       - key: LOG_LEVEL
