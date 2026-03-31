@@ -1,11 +1,3 @@
-// Polyfill performance methods before Next.js initializes (fixes mgt.clearMarks build error)
-if (typeof globalThis.performance !== 'undefined') {
-  const _perf = globalThis.performance;
-  if (typeof _perf.clearMarks !== 'function') _perf.clearMarks = () => {};
-  if (typeof _perf.clearMeasures !== 'function') _perf.clearMeasures = () => {};
-  if (typeof _perf.clearResourceTimings !== 'function') _perf.clearResourceTimings = () => {};
-}
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
