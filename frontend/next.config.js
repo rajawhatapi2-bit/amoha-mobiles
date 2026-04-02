@@ -14,6 +14,8 @@ const nextConfig = {
       { protocol: 'https', hostname: 'images.unsplash.com' },
       { protocol: 'https', hostname: 'picsum.photos' },
       { protocol: 'https', hostname: 'fastly.picsum.photos' },
+      { protocol: 'https', hostname: 'cdn.dummyjson.com' },
+      { protocol: 'https', hostname: 'placehold.co' },
     ],
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 768, 1024, 1280, 1536],

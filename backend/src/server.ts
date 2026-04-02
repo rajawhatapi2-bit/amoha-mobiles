@@ -3,6 +3,29 @@ import connectDB from './config/db';
 import env from './config/env';
 import logger from './utils/logger.util';
 
+// Keep-alive cron for Render free tier (pings health endpoint every 14 minutes)
+const startKeepAlive = (port: number | string): void => {
+  const INTERVAL_MS = 14 * 60 * 1000; // 14 minutes
+  const url = process.env.RENDER_EXTERNAL_URL
+    ? `${process.env.RENDER_EXTERNAL_URL}/health`
+    : `http://localhost:${port}/health`;
+
+  setInterval(async () => {
+    try {
+      const res = await fetch(url);
+      if (res.ok) {
+        logger.info(`[keep-alive] Pinged ${url} — OK`);
+      } else {
+        logger.warn(`[keep-alive] Pinged ${url} — Status ${res.status}`);
+      }
+    } catch (err) {
+      logger.warn(`[keep-alive] Failed to ping ${url}`, err);
+    }
+  }, INTERVAL_MS);
+
+  logger.info(`[keep-alive] Cron started — pinging every 14 minutes`);
+};
+
 const startServer = async (): Promise<void> => {
   try {
     // Connect to MongoDB
@@ -17,6 +40,11 @@ const startServer = async (): Promise<void> => {
       logger.info(`📦 Environment: ${env.NODE_ENV}`);
       logger.info(`🔗 Health check: /health`);
       logger.info(`📡 API Base: /api`);
+
+      // Start keep-alive cron in production
+      if (env.NODE_ENV === 'production') {
+        startKeepAlive(PORT);
+      }
     });
 
     // Graceful shutdown
