@@ -2,7 +2,6 @@ import app from './app';
 import connectDB from './config/db';
 import env from './config/env';
 import logger from './utils/logger.util';
-// CORS domains: amohamobiles.com, admin.amohamobiles.com
 
 // Keep-alive cron for Render free tier (pings health endpoint every 14 minutes)
 const startKeepAlive = (port: number | string): void => {
