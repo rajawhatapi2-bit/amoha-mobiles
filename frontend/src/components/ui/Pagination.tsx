@@ -45,7 +45,7 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
       {getPageNumbers().map((page, idx) =>
         page === '...' ? (
           <span key={`ellipsis-${idx}`} className="flex h-10 w-8 items-center justify-center text-gray-600">
-            â€¦
+            …
           </span>
         ) : (
           <button

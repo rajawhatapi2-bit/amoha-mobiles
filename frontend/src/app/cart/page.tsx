@@ -84,7 +84,7 @@ export default function CartPage() {
                   <Link href={`/product/${item.product.slug}`} className="text-sm font-semibold text-gray-900 dark:text-white hover:text-primary-400 line-clamp-2">
                     {item.product.name}
                   </Link>
-                  <p className="mt-0.5 text-xs text-gray-500">{item.product.brand}{item.color ? ` Â· ${item.color}` : ''}</p>
+                  <p className="mt-0.5 text-xs text-gray-500">{item.product.brand}{item.color ? ` · ${item.color}` : ''}</p>
                 </div>
                 <div className="mt-2 flex items-center justify-between">
                   <div className="flex items-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5">

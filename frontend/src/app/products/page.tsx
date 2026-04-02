@@ -175,7 +175,7 @@ export default function ProductsPage() {
     );
   }
   if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
-    const label = `â‚¹${(filters.priceMin || 0).toLocaleString()} â€“ â‚¹${(filters.priceMax || 200000).toLocaleString()}`;
+    const label = `₹${(filters.priceMin || 0).toLocaleString()} â€“ ₹${(filters.priceMax || 200000).toLocaleString()}`;
     activeFilterTags.push({
       label: `Price: ${label}`,
       onRemove: () => handleFilterChange({ priceMin: undefined, priceMax: undefined }),
@@ -183,7 +183,7 @@ export default function ProductsPage() {
   }
   if (filters.rating !== undefined) {
     activeFilterTags.push({
-      label: `${filters.rating}â˜… & above`,
+      label: `${filters.rating}★ & above`,
       onRemove: () => handleFilterChange({ rating: undefined }),
     });
   }
