@@ -187,12 +187,12 @@ export default function CheckoutPage() {
         <div className="grid gap-6 lg:grid-cols-3">
           <div className="space-y-6 lg:col-span-2">
             {/* Shipping Address */}
-            <div className="glass-card p-5 sm:p-6">
-              <div className="flex items-center gap-2 mb-5">
+            <div className="glass-card p-4 sm:p-5 md:p-6">
+              <div className="flex items-center gap-2 mb-4 sm:mb-5">
                 <HiOutlineLocationMarker className="h-5 w-5 text-primary-400" />
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Shipping Address</h2>
+                <h2 className="text-base font-bold text-gray-900 dark:text-white sm:text-lg">Shipping Address</h2>
               </div>
-              <div className="grid gap-4 sm:grid-cols-2">
+              <div className="grid gap-3 sm:grid-cols-2 sm:gap-4">
                 <div>
                   <label className="mb-1.5 block text-xs font-semibold text-gray-600 dark:text-gray-300">Full Name *</label>
                   <input name="fullName" value={address.fullName} onChange={handleInputChange} className="glass-input py-2.5 text-sm" placeholder="John Doe" />
@@ -233,24 +233,24 @@ export default function CheckoutPage() {
             </div>
 
             {/* Payment Method */}
-            <div className="glass-card p-5 sm:p-6">
-              <div className="flex items-center gap-2 mb-5">
+            <div className="glass-card p-4 sm:p-5 md:p-6">
+              <div className="flex items-center gap-2 mb-4 sm:mb-5">
                 <HiOutlineShieldCheck className="h-5 w-5 text-primary-400" />
-                <h2 className="text-lg font-bold text-gray-900 dark:text-white">Payment Method</h2>
+                <h2 className="text-base font-bold text-gray-900 dark:text-white sm:text-lg">Payment Method</h2>
               </div>
-              <div className="grid gap-3 sm:grid-cols-2">
+              <div className="grid gap-2.5 sm:grid-cols-2 sm:gap-3">
                 {paymentMethods.map((method) => (
                   <button
                     key={method.id}
                     onClick={() => setSelectedPayment(method.id)}
-                    className={`flex items-center gap-3 rounded-xl border p-4 text-left transition-all ${
+                    className={`flex items-center gap-2.5 rounded-xl border p-3 text-left transition-all sm:gap-3 sm:p-4 ${
                       selectedPayment === method.id
                         ? 'border-primary-500 bg-primary-500/10 shadow-glow'
                         : 'border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 hover:border-gray-300 dark:hover:border-white/20'
                     }`}
                   >
-                    <span className="text-2xl">{method.icon}</span>
-                    <div>
+                    <span className="text-xl sm:text-2xl flex-shrink-0">{method.icon}</span>
+                    <div className="min-w-0">
                       <span className={`block text-sm font-medium ${selectedPayment === method.id ? 'text-primary-400' : 'text-gray-900 dark:text-white'}`}>
                         {method.label}
                       </span>
@@ -279,7 +279,7 @@ export default function CheckoutPage() {
 
           {/* Order Summary */}
           <div className="lg:col-span-1">
-            <div className="glass-card sticky top-24 p-5">
+            <div className="glass-card sticky top-20 p-4 sm:top-24 sm:p-5">
               <h3 className="text-lg font-bold text-gray-900 dark:text-white">Order Summary</h3>
 
               <div className="mt-4 max-h-60 space-y-3 overflow-y-auto pr-1">

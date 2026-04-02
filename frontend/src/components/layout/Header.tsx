@@ -45,7 +45,7 @@ export default function Header() {
       {/* Top bar */}
       <div className="border-b border-gray-100 bg-gray-50/80 dark:border-white/5 dark:bg-primary-950/80">
         <div className="page-container flex items-center justify-between py-1.5 text-xs text-gray-500 dark:text-gray-400">
-          <span className="text-xs font-medium text-gray-600 dark:text-gray-400">{announcement}</span>
+          <span className="truncate text-xs font-medium text-gray-600 dark:text-gray-400">{announcement}</span>
           <span className="hidden text-xs font-medium text-gray-600 dark:text-gray-400 sm:inline">Support: {contactPhone}</span>
         </div>
       </div>
@@ -80,7 +80,7 @@ export default function Header() {
             {/* Mobile search toggle */}
             <button
               onClick={() => setIsSearchOpen(!isSearchOpen)}
-              className="rounded-lg p-2 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white lg:hidden"
+              className="rounded-lg p-2.5 text-gray-500 transition-colors hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-white/5 dark:hover:text-white lg:hidden"
             >
               <HiOutlineSearch className="h-5 w-5" />
             </button>

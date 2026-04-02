@@ -175,7 +175,7 @@ export default function ProductsPage() {
     );
   }
   if (filters.priceMin !== undefined || filters.priceMax !== undefined) {
-    const label = `₹${(filters.priceMin || 0).toLocaleString()} â€“ ₹${(filters.priceMax || 200000).toLocaleString()}`;
+    const label = `₹${(filters.priceMin || 0).toLocaleString()} – ₹${(filters.priceMax || 200000).toLocaleString()}`;
     activeFilterTags.push({
       label: `Price: ${label}`,
       onRemove: () => handleFilterChange({ priceMin: undefined, priceMax: undefined }),
@@ -290,7 +290,7 @@ export default function ProductsPage() {
           </div>
 
           <div className="flex items-center gap-3">
-            {/* Grid toggle â€” desktop only */}
+            {/* Grid toggle – desktop only */}
             <div className="hidden items-center gap-0.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.04] p-1 lg:flex">
               <button
                 onClick={() => setGridCols(3)}

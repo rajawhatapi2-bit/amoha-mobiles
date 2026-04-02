@@ -63,17 +63,17 @@ export default function ComparePage() {
       </div>
 
       <div className="overflow-x-auto">
-        <table className="w-full min-w-[640px] border-collapse">
+        <table className="w-full min-w-[480px] border-collapse">
           {/* Product cards header */}
           <thead>
             <tr>
-              <th className="w-40 p-2 text-left text-xs font-semibold text-gray-500 dark:text-gray-400">Product</th>
+              <th className="w-28 p-2 text-left text-xs font-semibold text-gray-500 dark:text-gray-400 sm:w-40">Product</th>
               {items.map((product) => (
                 <th key={product._id} className="p-2 text-center">
                   <div className="glass-card relative flex flex-col items-center p-4">
                     <button
                       onClick={() => removeFromCompare(product._id)}
-                      className="absolute right-2 top-2 rounded-full p-1 text-gray-400 transition-colors hover:bg-red-500/10 hover:text-red-400"
+                      className="absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full text-gray-400 transition-colors hover:bg-red-500/10 hover:text-red-400 sm:right-2 sm:top-2"
                     >
                       <HiOutlineX className="h-4 w-4" />
                     </button>

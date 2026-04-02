@@ -215,7 +215,7 @@ export default function HomePage() {
 
       {/* Features Bar */}
       <section className="border-y border-gray-100 dark:border-white/5">
-        <div className="page-container grid grid-cols-2 gap-3 py-3 sm:py-4 lg:grid-cols-4">
+        <div className="page-container grid grid-cols-2 gap-2 sm:gap-3 py-2 sm:py-3 lg:grid-cols-4 lg:py-4">
           {features.map((feature) => (
             <div key={feature.title} className="flex items-center gap-2.5">
               <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-primary-50 text-primary-600 dark:bg-primary-500/10 dark:text-primary-400">
@@ -333,12 +333,12 @@ export default function HomePage() {
             <h2 className="text-xl font-bold text-gray-900 dark:text-white sm:text-2xl">Discover More</h2>
             <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">Find the latest releases, offers and exclusives right here</p>
           </div>
-          <div className="grid grid-cols-2 gap-2.5 sm:gap-3 md:grid-cols-3 md:grid-rows-2 md:gap-4" style={{ minHeight: '320px' }}>
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 md:grid-cols-3 md:grid-rows-2 md:gap-4">
             {firstDiscover && (
               <Link
                 href={firstDiscover.link || '/products'}
                 className="group relative col-span-2 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm md:col-span-1 md:row-span-2 md:rounded-2xl dark:border-white/[0.06] dark:bg-white/[0.02]"
-                style={{ minHeight: '200px' }}
+                style={{ minHeight: '160px' }}
               >
                 <Image
                   src={firstDiscover.image || PLACEHOLDER_BANNER}
@@ -359,7 +359,7 @@ export default function HomePage() {
               <Link
                 href={secondDiscover.link || '/products'}
                 className="group relative col-span-2 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm md:col-span-2 md:row-span-1 md:rounded-2xl dark:border-white/[0.06] dark:bg-white/[0.02]"
-                style={{ minHeight: '160px' }}
+                style={{ minHeight: '130px' }}
               >
                 <Image
                   src={secondDiscover.image || PLACEHOLDER_BANNER}
@@ -380,7 +380,7 @@ export default function HomePage() {
               <Link
                 href={thirdDiscover.link || '/products'}
                 className="group relative col-span-1 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm md:col-span-1 md:row-span-1 md:rounded-2xl dark:border-white/[0.06] dark:bg-white/[0.02]"
-                style={{ minHeight: '140px' }}
+                style={{ minHeight: '120px' }}
               >
                 <Image
                   src={thirdDiscover.image || PLACEHOLDER_PRODUCT}
@@ -401,7 +401,7 @@ export default function HomePage() {
               <Link
                 href={fourthDiscover.link || '/products'}
                 className="group relative col-span-1 overflow-hidden rounded-xl border border-gray-100 bg-white shadow-sm md:col-span-1 md:row-span-1 md:rounded-2xl dark:border-white/[0.06] dark:bg-white/[0.02]"
-                style={{ minHeight: '140px' }}
+                style={{ minHeight: '120px' }}
               >
                 <Image
                   src={fourthDiscover.image || PLACEHOLDER_CATEGORY}
@@ -431,7 +431,7 @@ export default function HomePage() {
             </div>
             <div className="flex gap-3 overflow-x-auto scrollbar-hide pb-1 lg:grid lg:grid-cols-4 lg:overflow-visible lg:pb-0">
               {topReviews.map((review) => (
-                <div key={review._id} className="w-[260px] flex-shrink-0 lg:w-auto rounded-xl border border-gray-100 bg-white p-4 dark:border-white/[0.06] dark:bg-white/[0.02]">
+                <div key={review._id} className="w-[220px] flex-shrink-0 sm:w-[260px] lg:w-auto rounded-xl border border-gray-100 bg-white p-3 sm:p-4 dark:border-white/[0.06] dark:bg-white/[0.02]">
                   <div className="flex items-center gap-3 mb-3">
                     <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-50 text-primary-600 font-bold text-sm dark:bg-primary-500/10 dark:text-primary-400">
                       {review.user.avatar ? (

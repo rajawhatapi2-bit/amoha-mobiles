@@ -203,7 +203,7 @@ export default function ProfilePage() {
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Profile Card */}
         <div className="lg:col-span-1">
-          <div className="glass-card p-6 text-center">
+          <div className="glass-card p-4 sm:p-6 text-center">
             <div className="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-primary-500 to-accent-500 text-2xl font-bold text-white shadow-glow">
               {user.name.charAt(0).toUpperCase()}
             </div>
@@ -311,13 +311,13 @@ export default function ProfilePage() {
                       <span className="text-xs text-gray-500 dark:text-gray-400">Set as default</span>
                     </label>
                     <div className="ml-auto flex gap-2">
-                      <button type="button" onClick={() => setShowAddressForm(false)} className="rounded-lg border border-gray-200 dark:border-white/10 px-4 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
+                      <button type="button" onClick={() => setShowAddressForm(false)} className="rounded-lg border border-gray-200 dark:border-white/10 px-4 py-2 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white">
                         Cancel
                       </button>
                       <button
                         type="submit"
                         disabled={isSavingAddress}
-                        className="flex items-center gap-1.5 rounded-lg bg-primary-600 px-4 py-1.5 text-xs font-semibold text-white hover:bg-primary-500 disabled:opacity-50"
+                        className="flex items-center gap-1.5 rounded-lg bg-primary-600 px-4 py-2 text-xs font-semibold text-white hover:bg-primary-500 disabled:opacity-50"
                       >
                         {isSavingAddress ? 'Saving...' : 'Save'}
                       </button>
@@ -342,7 +342,7 @@ export default function ProfilePage() {
                         <p className="text-sm font-semibold text-gray-900 dark:text-white">{addr.fullName}</p>
                         <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                           {addr.addressLine1}{addr.addressLine2 ? `, ${addr.addressLine2}` : ''}<br />
-                          {addr.city}, {addr.state} â€“ {addr.pincode}
+                          {addr.city}, {addr.state} – {addr.pincode}
                         </p>
                         <p className="mt-1 text-xs text-gray-500">{addr.phone}</p>
                         <div className="mt-2 flex items-center gap-2">

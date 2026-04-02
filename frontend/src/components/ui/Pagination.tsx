@@ -32,11 +32,11 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
   };
 
   return (
-    <div className="flex items-center gap-1.5">
+    <div className="flex flex-wrap items-center justify-center gap-1 sm:gap-1.5">
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className="flex h-10 items-center gap-1.5 rounded-xl border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.04] px-3 text-sm font-medium text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300 dark:hover:border-white/20 hover:bg-white/[0.08] hover:text-gray-900 dark:hover:text-white disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:border-gray-200 dark:disabled:hover:border-white/10 disabled:hover:bg-gray-50 dark:disabled:hover:bg-white/[0.04] disabled:hover:text-gray-500"
+        className="flex h-9 items-center gap-1 rounded-lg border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.04] px-2 text-xs font-medium text-gray-500 dark:text-gray-400 transition-all hover:border-gray-300 dark:hover:border-white/20 hover:bg-white/[0.08] hover:text-gray-900 dark:hover:text-white disabled:cursor-not-allowed disabled:opacity-30 sm:h-10 sm:gap-1.5 sm:rounded-xl sm:px-3 sm:text-sm"
       >
         <HiChevronLeft className="h-4 w-4" />
         <span className="hidden sm:inline">Prev</span>
@@ -44,14 +44,14 @@ export default function Pagination({ currentPage, totalPages, onPageChange }: Pa
 
       {getPageNumbers().map((page, idx) =>
         page === '...' ? (
-          <span key={`ellipsis-${idx}`} className="flex h-10 w-8 items-center justify-center text-gray-600">
+          <span key={`ellipsis-${idx}`} className="flex h-9 w-7 items-center justify-center text-gray-600 sm:h-10 sm:w-8">
             …
           </span>
         ) : (
           <button
             key={page}
             onClick={() => onPageChange(page)}
-            className={`flex h-10 w-10 items-center justify-center rounded-xl text-sm font-semibold transition-all ${
+            className={`flex h-9 w-9 items-center justify-center rounded-lg text-xs font-semibold transition-all sm:h-10 sm:w-10 sm:rounded-xl sm:text-sm ${
               currentPage === page
                 ? 'bg-primary-600 text-white shadow-lg shadow-primary-600/25'
                 : 'border border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/[0.04] text-gray-500 dark:text-gray-400 hover:border-gray-300 dark:hover:border-white/20 hover:bg-white/[0.08] hover:text-gray-900 dark:hover:text-white'

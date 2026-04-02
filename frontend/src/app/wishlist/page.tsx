@@ -73,7 +73,7 @@ export default function WishlistPage() {
           ))}
         </div>
       ) : items.length > 0 ? (
-        <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div className="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-3 lg:grid-cols-4">
           {items.map((item) => (
             <div key={item._id} className="glass-card-sm group overflow-hidden">
               <Link href={`/product/${item.product.slug}`} className="relative block aspect-square overflow-hidden bg-gray-100 dark:bg-white/5">
@@ -103,14 +103,14 @@ export default function WishlistPage() {
                 <div className="mt-3 flex gap-2">
                   <button
                     onClick={() => handleMoveToCart(item.product._id)}
-                    className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary-600 py-2 text-xs font-semibold text-white transition-all hover:bg-primary-500"
+                    className="flex flex-1 items-center justify-center gap-1.5 rounded-lg bg-primary-600 py-2.5 text-xs font-semibold text-white transition-all hover:bg-primary-500"
                   >
                     <HiOutlineShoppingBag className="h-3.5 w-3.5" />
                     Move to Cart
                   </button>
                   <button
                     onClick={() => handleRemove(item.product._id)}
-                    className="flex items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 px-3 py-2 text-gray-500 dark:text-gray-400 transition-all hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
+                    className="flex items-center justify-center rounded-lg border border-gray-200 dark:border-white/10 bg-gray-100 dark:bg-white/5 px-3 py-2.5 text-gray-500 dark:text-gray-400 transition-all hover:border-red-500/30 hover:bg-red-500/10 hover:text-red-400"
                   >
                     <HiOutlineTrash className="h-3.5 w-3.5" />
                   </button>

@@ -35,8 +35,8 @@ export default function Footer() {
 
   return (
     <footer className="border-t border-gray-200 bg-gray-50 dark:border-white/5 dark:bg-surface-50">
-      <div className="page-container py-10 lg:py-14">
-        <div className="grid grid-cols-2 gap-8 md:grid-cols-4 lg:gap-12">
+      <div className="page-container py-8 sm:py-10 lg:py-14">
+        <div className="grid grid-cols-2 gap-4 sm:gap-6 md:grid-cols-4 lg:gap-12">
           {/* Brand */}
           <div className="col-span-2 md:col-span-1">
             <Link href="/" prefetch={true} className="flex items-center gap-2">
@@ -130,9 +130,9 @@ export default function Footer() {
         </div>
 
         {/* Bottom */}
-        <div className="mt-10 border-t border-gray-200 pt-8 dark:border-white/5">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <p className="text-sm text-gray-500 dark:text-gray-400">
+        <div className="mt-8 border-t border-gray-200 pt-6 dark:border-white/5 sm:mt-10 sm:pt-8">
+          <div className="flex flex-col gap-3 sm:gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <p className="text-xs text-gray-500 dark:text-gray-400 sm:text-sm">
               &copy; {new Date().getFullYear()} {siteName} Mobiles. All rights reserved.
             </p>
             <div className="flex flex-wrap items-center gap-2">
@@ -141,7 +141,7 @@ export default function Footer() {
                   key={link.href}
                   href={link.href}
                   prefetch={true}
-                  className="rounded-full border border-gray-200 px-3 py-1 text-xs text-gray-600 transition-colors hover:border-primary-300 hover:text-primary-500 dark:border-white/10 dark:text-gray-400 dark:hover:border-primary-500/30 dark:hover:text-primary-300"
+                  className="rounded-full border border-gray-200 px-2 py-0.5 text-[11px] text-gray-600 transition-colors hover:border-primary-300 hover:text-primary-500 dark:border-white/10 dark:text-gray-400 dark:hover:border-primary-500/30 dark:hover:text-primary-300 sm:px-3 sm:py-1 sm:text-xs"
                 >
                   {link.label}
                 </Link>

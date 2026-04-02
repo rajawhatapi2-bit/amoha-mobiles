@@ -75,8 +75,8 @@ export default function CartPage() {
         {/* Cart Items */}
         <div className="space-y-3 lg:col-span-2">
           {items.map((item) => (
-            <div key={item._id} className="glass-card-sm flex gap-4 p-4">
-              <Link href={`/product/${item.product.slug}`} className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100 dark:bg-white/5 sm:h-28 sm:w-28">
+            <div key={item._id} className="glass-card-sm flex gap-3 sm:gap-4 p-3 sm:p-4">
+              <Link href={`/product/${item.product.slug}`} className="relative h-20 w-20 flex-shrink-0 overflow-hidden rounded-lg bg-gray-100 dark:bg-white/5 sm:h-28 sm:w-28">
                 <Image src={item.product.thumbnail} alt={item.product.name} fill unoptimized className="object-cover" sizes="112px" />
               </Link>
               <div className="flex flex-1 flex-col justify-between min-w-0">
@@ -91,13 +91,13 @@ export default function CartPage() {
                     <button
                       onClick={() => updateQuantity(item._id, Math.max(1, item.quantity - 1))}
                       disabled={isLoading}
-                      className="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
-                    >âˆ’</button>
+                      className="px-2.5 py-2 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50 sm:px-3"
+                    >−</button>
                     <span className="min-w-[1.5rem] text-center text-xs font-semibold text-gray-900 dark:text-white">{item.quantity}</span>
                     <button
                       onClick={() => updateQuantity(item._id, item.quantity + 1)}
                       disabled={isLoading}
-                      className="px-3 py-1.5 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50"
+                      className="px-2.5 py-2 text-xs text-gray-500 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white disabled:opacity-50 sm:px-3"
                     >+</button>
                   </div>
                   <div className="flex items-center gap-3">
@@ -120,7 +120,7 @@ export default function CartPage() {
               <h3 className="mb-3 text-base font-bold text-gray-900 dark:text-white">Accessories for your items</h3>
               <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
                 {accessories.map((acc) => (
-                  <div key={acc._id} className="glass-card-sm flex w-40 flex-shrink-0 flex-col p-3">
+                    <div key={acc._id} className="glass-card-sm flex w-36 flex-shrink-0 flex-col p-2.5 sm:w-40 sm:p-3">
                     <Link href={`/product/${acc.slug}`} className="relative mx-auto h-28 w-28 overflow-hidden rounded-lg bg-gray-100 dark:bg-white/5">
                       <Image src={acc.images?.[0] || '/placeholder.png'} alt={acc.name} fill unoptimized className="object-cover" sizes="112px" />
                     </Link>
@@ -151,7 +151,7 @@ export default function CartPage() {
 
         {/* Order Summary */}
         <div className="lg:col-span-1">
-          <div className="glass-card sticky top-24 p-5">
+            <div className="glass-card sticky top-20 p-4 sm:top-24 sm:p-5">
             <h3 className="text-lg font-bold text-gray-900 dark:text-white">Order Summary</h3>
 
             {/* Coupon */}
@@ -191,7 +191,7 @@ export default function CartPage() {
               {discount > 0 && (
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-500 dark:text-gray-400">Discount</span>
-                  <span className="text-emerald-400">âˆ’{formatPrice(discount)}</span>
+                  <span className="text-emerald-400">−{formatPrice(discount)}</span>
                 </div>
               )}
               <div className="flex justify-between text-sm">

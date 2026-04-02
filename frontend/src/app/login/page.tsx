@@ -36,10 +36,10 @@ function LoginForm() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-surface px-4 py-12">
+    <div className="flex min-h-screen items-center justify-center bg-surface px-3 sm:px-4 py-8 sm:py-12">
       <div className="relative w-full max-w-md">
         <div className="absolute -inset-4 rounded-3xl bg-gradient-to-r from-primary-600/20 to-accent-600/20 blur-3xl" />
-        <div className="glass-card relative p-8 sm:p-10">
+        <div className="glass-card relative p-5 sm:p-8 md:p-10">
           <div className="text-center">
             <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-primary-500 to-accent-500 text-lg font-bold text-white shadow-glow">
               A
