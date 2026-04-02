@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { HiOutlineHeart, HiHeart, HiStar, HiOutlineShoppingCart, HiOutlineSwitchHorizontal } from 'react-icons/hi';
 import type { Product } from '@/types';
 import { formatPrice, getRatingColor } from '@/lib/utils';
@@ -22,6 +23,7 @@ export default function ProductCard({ product }: ProductCardProps) {
   const { addToCart } = useCartStore();
   const { isAuthenticated } = useAuthStore();
   const { addToCompare, removeFromCompare, isInCompare } = useCompareStore();
+  const router = useRouter();
 
   const wishlisted = isInWishlist(product._id);
   const compared = isInCompare(product._id);
@@ -42,7 +44,7 @@ export default function ProductCard({ product }: ProductCardProps) {
     e.preventDefault();
     e.stopPropagation();
     if (!isAuthenticated) {
-      toast.error('Please login to add to wishlist');
+      router.push('/login?redirect=' + encodeURIComponent('/product/' + product.slug));
       return;
     }
     try {
@@ -61,6 +63,10 @@ export default function ProductCard({ product }: ProductCardProps) {
   const handleAddToCart = async (e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
+    if (!isAuthenticated) {
+      router.push('/login?redirect=' + encodeURIComponent('/product/' + product.slug));
+      return;
+    }
     try {
       await addToCart(product._id);
       toast.success('Added to cart');

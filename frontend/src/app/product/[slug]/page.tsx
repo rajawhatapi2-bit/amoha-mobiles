@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import {
   HiStar,
   HiOutlineHeart,
@@ -32,6 +32,7 @@ const PLACEHOLDER_IMG = '/images/no-product.svg';
 
 export default function ProductDetailPage() {
   const { slug } = useParams<{ slug: string }>();
+  const router = useRouter();
   const [product, setProduct] = useState<Product | null>(null);
   const [related, setRelated] = useState<Product[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -120,6 +121,10 @@ export default function ProductDetailPage() {
   const savings = product.originalPrice > product.price ? product.originalPrice - product.price : 0;
 
   const handleAddToCart = async () => {
+    if (!isAuthenticated) {
+      router.push('/login?redirect=' + encodeURIComponent('/product/' + slug));
+      return;
+    }
     try {
       await addToCart(product._id, quantity, selectedColor);
       toast.success('Added to cart!');
@@ -129,6 +134,10 @@ export default function ProductDetailPage() {
   };
 
   const handleWishlist = async () => {
+    if (!isAuthenticated) {
+      router.push('/login?redirect=' + encodeURIComponent('/product/' + slug));
+      return;
+    }
     try {
       if (wishlisted) {
         await removeFromWishlist(product._id);
@@ -138,7 +147,7 @@ export default function ProductDetailPage() {
         toast.success('Added to wishlist!');
       }
     } catch {
-      toast.error('Please login first');
+      toast.error('Failed to update wishlist');
     }
   };
 

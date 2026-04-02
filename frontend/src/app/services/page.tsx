@@ -111,11 +111,11 @@ export default function ServicesPage() {
   return (
     <div className="min-h-screen">
       {/* Hero */}
-      <div className="relative overflow-hidden border-b border-gray-200 dark:border-white/5 bg-gradient-to-b from-primary-950 to-surface-50">
+      <div className="relative overflow-hidden border-b border-gray-200 dark:border-white/5 bg-gradient-to-b from-primary-50 to-white dark:from-primary-950 dark:to-surface-50">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(99,102,241,0.15),transparent_50%)]" />
         <div className="page-container relative py-12 sm:py-16 text-center">
           <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 dark:text-white">
-            What We <span className="text-primary-400">Offer</span>
+            What We <span className="text-primary-500 dark:text-primary-400">Offer</span>
           </h1>
           <p className="mt-3 text-sm sm:text-base text-gray-500 dark:text-gray-400 max-w-xl mx-auto">
             Professional mobile repair services by certified technicians. Fast turnaround, genuine parts, and warranty on all repairs.
